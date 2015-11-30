@@ -1,0 +1,463 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Variables, expressions and statements &mdash; Pense Python 2e documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2e',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Pense Python 2e documentation" href="index.html" />
+    <link rel="next" title="Functions" href="03-function.html" />
+    <link rel="prev" title="The way of the program" href="01-the-way.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="variables-expressions-and-statements">
+<h1>Variables, expressions and statements<a class="headerlink" href="#variables-expressions-and-statements" title="Permalink to this headline">¶</a></h1>
+<p>One of the most powerful features of a programming language is the
+ability to manipulate <strong>variables</strong>. A variable is a name that refers to
+a value.</p>
+<div class="section" id="assignment-statements">
+<h2>Assignment statements<a class="headerlink" href="#assignment-statements" title="Permalink to this headline">¶</a></h2>
+<p>An <strong>assignment statement</strong> creates a new variable and gives it a value:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">message</span> <span class="o">=</span> <span class="s">&#39;And now for something completely different&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n</span> <span class="o">=</span> <span class="mi">17</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pi</span> <span class="o">=</span> <span class="mf">3.141592653589793</span>
+</pre></div>
+</div>
+<p>This example makes three assignments. The first assigns a string to a
+new variable named message; the second gives the integer 17 to n; the
+third assigns the (approximate) value of <span class="math">\pi</span> to pi.</p>
+<p>A common way to represent variables on paper is to write the name with
+an arrow pointing to its value. This kind of figure is called a <strong>state
+diagram</strong> because it shows what state each of the variables is in (think
+of it as the variable’s state of mind). Figure&nbsp;[fig.state2] shows the
+result of the previous example.</p>
+<div class="figure" id="id1">
+<img alt="State diagram." src="_images/state2.pdf" />
+<p class="caption"><span class="caption-text">State diagram.</span></p>
+</div>
+</div>
+<div class="section" id="variable-names">
+<h2>Variable names<a class="headerlink" href="#variable-names" title="Permalink to this headline">¶</a></h2>
+<p>Programmers generally choose names for their variables that are
+meaningful—they document what the variable is used for.</p>
+<p>Variable names can be as long as you like. They can contain both letters
+and numbers, but they can’t begin with a number. It is legal to use
+uppercase letters, but it is conventional to use only lower case for
+variables names.</p>
+<p>The underscore character, <code class="docutils literal"><span class="pre">_</span></code>, can appear in a name. It is often used
+in names with multiple words, such as <code class="docutils literal"><span class="pre">your_name</span></code> or
+<code class="docutils literal"><span class="pre">airspeed_of_unladen_swallow</span></code>.</p>
+<p>If you give a variable an illegal name, you get a syntax error:</p>
+<div class="highlight-python"><div class="highlight"><pre>&gt;&gt;&gt; 76trombones = &#39;big parade&#39;
+SyntaxError: invalid syntax
+&gt;&gt;&gt; more@ = 1000000
+SyntaxError: invalid syntax
+&gt;&gt;&gt; class = &#39;Advanced Theoretical Zymurgy&#39;
+SyntaxError: invalid syntax
+</pre></div>
+</div>
+<p>76trombones is illegal because it begins with a number. more&#64; is illegal
+because it contains an illegal character, &#64;. But what’s wrong with
+class?</p>
+<p>It turns out that class is one of Python’s <strong>keywords</strong>. The interpreter
+uses keywords to recognize the structure of the program, and they cannot
+be used as variable names.</p>
+<p>Python 3 has these keywords:</p>
+<div class="highlight-python"><div class="highlight"><pre>False      class      finally    is         return
+None       continue   for        lambda     try
+True       def        from       nonlocal   while
+and        del        global     not        with
+as         elif       if         or         yield
+assert     else       import     pass
+break      except     in         raise
+</pre></div>
+</div>
+<p>You don’t have to memorize this list. In most development environments,
+keywords are displayed in a different color; if you try to use one as a
+variable name, you’ll know.</p>
+</div>
+<div class="section" id="expressions-and-statements">
+<h2>Expressions and statements<a class="headerlink" href="#expressions-and-statements" title="Permalink to this headline">¶</a></h2>
+<p>An <strong>expression</strong> is a combination of values, variables, and operators.
+A value all by itself is considered an expression, and so is a variable,
+so the following are all legal expressions:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="mi">42</span>
+<span class="go">42</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n</span>
+<span class="go">17</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n</span> <span class="o">+</span> <span class="mi">25</span>
+<span class="go">42</span>
+</pre></div>
+</div>
+<p>When you type an expression at the prompt, the interpreter <strong>evaluates</strong>
+it, which means that it finds the value of the expression. In this
+example, n has the value 17 and n + 25 has the value 42.</p>
+<p>A <strong>statement</strong> is a unit of code that has an effect, like creating a
+variable or displaying a value.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">n</span> <span class="o">=</span> <span class="mi">17</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The first line is an assignment statement that gives a value to n. The
+second line is a print statement that displays the value of n.</p>
+<p>When you type a statement, the interpreter <strong>executes</strong> it, which means
+that it does whatever the statement says. In general, statements don’t
+have values.</p>
+</div>
+<div class="section" id="script-mode">
+<h2>Script mode<a class="headerlink" href="#script-mode" title="Permalink to this headline">¶</a></h2>
+<p>So far we have run Python in <strong>interactive mode</strong>, which means that you
+interact directly with the interpreter. Interactive mode is a good way
+to get started, but if you are working with more than a few lines of
+code, it can be clumsy.</p>
+<p>The alternative is to save code in a file called a <strong>script</strong> and then
+run the interpreter in <strong>script mode</strong> to execute the script. By
+convention, Python scripts have names that end with .py.</p>
+<p>If you know how to create and run a script on your computer, you are
+ready to go. Otherwise I recommend using PythonAnywhere again. I have
+posted instructions for running in script mode at
+<a class="reference external" href="http://tinyurl.com/thinkpython2e">http://tinyurl.com/thinkpython2e</a>.</p>
+<p>Because Python provides both modes, you can test bits of code in
+interactive mode before you put them in a script. But there are
+differences between interactive mode and script mode that can be
+confusing.</p>
+<p>For example, if you are using Python as a calculator, you might type</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">miles</span> <span class="o">=</span> <span class="mf">26.2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">miles</span> <span class="o">*</span> <span class="mf">1.61</span>
+<span class="go">42.182</span>
+</pre></div>
+</div>
+<p>The first line assigns a value to miles, but it has no visible effect.
+The second line is an expression, so the interpreter evaluates it and
+displays the result. It turns out that a marathon is about 42
+kilometers.</p>
+<p>But if you type the same code into a script and run it, you get no
+output at all. In script mode an expression, all by itself, has no
+visible effect. Python actually evaluates the expression, but it doesn’t
+display the value unless you tell it to:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">miles</span> <span class="o">=</span> <span class="mf">26.2</span>
+<span class="k">print</span><span class="p">(</span><span class="n">miles</span> <span class="o">*</span> <span class="mf">1.61</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This behavior can be confusing at first.</p>
+<p>A script usually contains a sequence of statements. If there is more
+than one statement, the results appear one at a time as the statements
+execute.</p>
+<p>For example, the script</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">print</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="k">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>produces the output</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="mi">1</span>
+<span class="mi">2</span>
+</pre></div>
+</div>
+<p>The assignment statement produces no output.</p>
+<p>To check your understanding, type the following statements in the Python
+interpreter and see what they do:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="mi">5</span>
+<span class="n">x</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">x</span> <span class="o">+</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<p>Now put the same statements in a script and run it. What is the output?
+Modify the script by transforming each expression into a print statement
+and then run it again.</p>
+</div>
+<div class="section" id="order-of-operations">
+<h2>Order of operations<a class="headerlink" href="#order-of-operations" title="Permalink to this headline">¶</a></h2>
+<p>When an expression contains more than one operator, the order of
+evaluation depends on the <strong>order of operations</strong>. For mathematical
+operators, Python follows mathematical convention. The acronym
+<strong>PEMDAS</strong> is a useful way to remember the rules:</p>
+<ul class="simple">
+<li><strong>P</strong>arentheses have the highest precedence and can be used to
+force an expression to evaluate in the order you want. Since
+expressions in parentheses are evaluated first, 2 * (3-1) is 4, and
+(1+1)**(5-2) is 8. You can also use parentheses to make an
+expression easier to read, as in (minute * 100) / 60, even if it
+doesn’t change the result.</li>
+<li><strong>E</strong>xponentiation has the next highest precedence, so 1 + 2**3
+is 9, not 27, and 2 * 3**2 is 18, not 36.</li>
+<li><strong>M</strong>ultiplication and <strong>D</strong>ivision have higher precedence than
+<strong>A</strong>ddition and <strong>S</strong>ubtraction. So 2*3-1 is 5, not 4, and
+6+4/2 is 8, not 5.</li>
+<li>Operators with the same precedence are evaluated from left to right
+(except exponentiation). So in the expression degrees / 2 * pi, the
+division happens first and the result is multiplied by pi. To divide
+by <span class="math">2 \pi</span>, you can use parentheses or write degrees / 2 / pi.</li>
+</ul>
+<p>I don’t work very hard to remember the precedence of operators. If I
+can’t tell by looking at the expression, I use parentheses to make it
+obvious.</p>
+</div>
+<div class="section" id="string-operations">
+<h2>String operations<a class="headerlink" href="#string-operations" title="Permalink to this headline">¶</a></h2>
+<p>In general, you can’t perform mathematical operations on strings, even
+if the strings look like numbers, so the following are illegal:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="s">&#39;2&#39;</span><span class="o">-</span><span class="s">&#39;1&#39;</span>    <span class="s">&#39;eggs&#39;</span><span class="o">/</span><span class="s">&#39;easy&#39;</span>    <span class="s">&#39;third&#39;</span><span class="o">*</span><span class="s">&#39;a charm&#39;</span>
+</pre></div>
+</div>
+<p>But there are two exceptions, + and .</p>
+<p>The + operator performs <strong>string concatenation</strong>, which means it joins
+the strings by linking them end-to-end. For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">first</span> <span class="o">=</span> <span class="s">&#39;throat&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">second</span> <span class="o">=</span> <span class="s">&#39;warbler&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">first</span> <span class="o">+</span> <span class="n">second</span>
+<span class="go">throatwarbler</span>
+</pre></div>
+</div>
+<p>The operator also works on strings; it performs repetition. For example,
+<code class="docutils literal"><span class="pre">'Spam'*3</span></code> is <code class="docutils literal"><span class="pre">'SpamSpamSpam'</span></code>. If one of the values is a string,
+the other has to be an integer.</p>
+<p>This use of + and makes sense by analogy with addition and
+multiplication. Just as 4*3 is equivalent to 4+4+4, we expect
+<code class="docutils literal"><span class="pre">'Spam'*3</span></code> to be the same as <code class="docutils literal"><span class="pre">'Spam'+'Spam'+'Spam'</span></code>, and it is. On
+the other hand, there is a significant way in which string concatenation
+and repetition are different from integer addition and multiplication.
+Can you think of a property that addition has that string concatenation
+does not?</p>
+</div>
+<div class="section" id="comments">
+<h2>Comments<a class="headerlink" href="#comments" title="Permalink to this headline">¶</a></h2>
+<p>As programs get bigger and more complicated, they get more difficult to
+read. Formal languages are dense, and it is often difficult to look at a
+piece of code and figure out what it is doing, or why.</p>
+<p>For this reason, it is a good idea to add notes to your programs to
+explain in natural language what the program is doing. These notes are
+called <strong>comments</strong>, and they start with the <code class="docutils literal"><span class="pre">#</span></code> symbol:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># compute the percentage of the hour that has elapsed</span>
+<span class="n">percentage</span> <span class="o">=</span> <span class="p">(</span><span class="n">minute</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span> <span class="o">/</span> <span class="mi">60</span>
+</pre></div>
+</div>
+<p>In this case, the comment appears on a line by itself. You can also put
+comments at the end of a line:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">percentage</span> <span class="o">=</span> <span class="p">(</span><span class="n">minute</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span> <span class="o">/</span> <span class="mi">60</span>     <span class="c"># percentage of an hour</span>
+</pre></div>
+</div>
+<p>Everything from the # to the end of the line is ignored—it has no effect
+on the execution of the program.</p>
+<p>Comments are most useful when they document non-obvious features of the
+code. It is reasonable to assume that the reader can figure out <em>what</em>
+the code does; it is more useful to explain <em>why</em>.</p>
+<p>This comment is redundant with the code and useless:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">v</span> <span class="o">=</span> <span class="mi">5</span>     <span class="c"># assign 5 to v</span>
+</pre></div>
+</div>
+<p>This comment contains useful information that is not in the code:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">v</span> <span class="o">=</span> <span class="mi">5</span>     <span class="c"># velocity in meters/second.</span>
+</pre></div>
+</div>
+<p>Good variable names can reduce the need for comments, but long names can
+make complex expressions hard to read, so there is a tradeoff.</p>
+</div>
+<div class="section" id="debugging">
+<h2>Debugging<a class="headerlink" href="#debugging" title="Permalink to this headline">¶</a></h2>
+<p>Three kinds of errors can occur in a program: syntax errors, runtime
+errors, and semantic errors. It is useful to distinguish between them in
+order to track them down more quickly.</p>
+<dl class="docutils">
+<dt>Syntax error:</dt>
+<dd><p class="first">“Syntax” refers to the structure of a program and the rules about
+that structure. For example, parentheses have to come in matching
+pairs, so (1 + 2) is legal, but 8) is a <strong>syntax error</strong>.</p>
+<p class="last">If there is a syntax error anywhere in your program, Python displays
+an error message and quits, and you will not be able to run the
+program. During the first few weeks of your programming career, you
+might spend a lot of time tracking down syntax errors. As you gain
+experience, you will make fewer errors and find them faster.</p>
+</dd>
+<dt>Runtime error:</dt>
+<dd><p class="first">The second type of error is a runtime error, so called because the
+error does not appear until after the program has started running.
+These errors are also called <strong>exceptions</strong> because they usually
+indicate that something exceptional (and bad) has happened.</p>
+<p class="last">Runtime errors are rare in the simple programs you will see in the
+first few chapters, so it might be a while before you encounter one.</p>
+</dd>
+<dt>Semantic error:</dt>
+<dd><p class="first">The third type of error is “semantic”, which means related to
+meaning. If there is a semantic error in your program, it will run
+without generating error messages, but it will not do the right
+thing. It will do something else. Specifically, it will do what you
+told it to do.</p>
+<p class="last">Identifying semantic errors can be tricky because it requires you to
+work backward by looking at the output of the program and trying to
+figure out what it is doing.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="glossary">
+<span id="glossary02"></span><h2>Glossary<a class="headerlink" href="#glossary" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>variável (<em>variable</em>)</dt>
+<dd>A name that refers to a value.</dd>
+<dt>atribuição (<em>assignment</em>)</dt>
+<dd>A statement that assigns a value to a variable.</dd>
+<dt>diagrama de estado (<em>state diagram</em>)</dt>
+<dd>A graphical representation of a set of variables and the values they refer to.</dd>
+<dt>palavra-chave (<em>keyword</em>)</dt>
+<dd>A reserved word that is used to parse a program; you cannot use keywords like if, def, and while as variable names.</dd>
+<dt>operando (<em>operand</em>)</dt>
+<dd>One of the values on which an operator operates.</dd>
+<dt>expressão (<em>expression</em>)</dt>
+<dd>A combination of variables, operators, and values that represents a single result.</dd>
+<dt>avaliar (<em>evaluate</em>)</dt>
+<dd>To simplify an expression by performing the operations in order to yield a single value.</dd>
+<dt>instrução (<em>statement</em>)</dt>
+<dd>A section of code that represents a command or action. So far, the statements we have seen are assignments and print statements.</dd>
+<dt>executar (<em>execute</em>)</dt>
+<dd>To run a statement and do what it says.</dd>
+<dt>modo interativo (<em>interactive mode</em>)</dt>
+<dd>A way of using the Python interpreter by typing code at the prompt.</dd>
+<dt>modo de script (<em>script mode</em>)</dt>
+<dd>A way of using the Python interpreter to read code from a script and run it.</dd>
+<dt><em>script</em></dt>
+<dd>A program stored in a file.</dd>
+<dt>ordem das operações (<em>order of operations</em>)</dt>
+<dd>Rules governing the order in which expressions involving multiple operators and operands are evaluated.</dd>
+<dt>concatenar (<em>concatenate</em>)</dt>
+<dd>To join two operands end-to-end.</dd>
+<dt>comentário (<em>comment</em>)</dt>
+<dd>Information in a program that is meant for other programmers (or anyone reading the source code) and has no effect on the execution of the program.</dd>
+<dt>erro sintático (<em>syntax error</em>)</dt>
+<dd>An error in a program that makes it impossible to parse (and therefore impossible to interpret).</dd>
+<dt>exceção (<em>exception</em>)</dt>
+<dd>An error that is detected while the program is running.</dd>
+<dt>semântica (<em>semantics</em>)</dt>
+<dd>The meaning of a program.</dd>
+<dt>erro semântico (<em>semantic error</em>)</dt>
+<dd>An error in a program that makes it do something other than what the programmer intended.</dd>
+</dl>
+</div>
+<div class="section" id="exercises">
+<h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
+<p>Repeating my advice from the previous chapter, whenever you learn a new
+feature, you should try it out in interactive mode and make errors on
+purpose to see what goes wrong.</p>
+<ul class="simple">
+<li>We’ve seen that n = 42 is legal. What about 42 = n?</li>
+<li>How about x = y = 1?</li>
+<li>In some languages every statement ends with a semi-colon, ;. What
+happens if you put a semi-colon at the end of a Python statement?</li>
+<li>What if you put a period at the end of a statement?</li>
+<li>In math notation you can multiply <span class="math">x</span> and <span class="math">y</span> like this:
+<span class="math">x y</span>. What happens if you try that in Python?</li>
+</ul>
+<p>Practice using the Python interpreter as a calculator:</p>
+<ol class="arabic simple">
+<li>The volume of a sphere with radius <span class="math">r</span> is
+<span class="math">\frac{4}{3} \pi r^3</span>. What is the volume of a sphere with
+radius 5?</li>
+<li>Suppose the cover price of a book is $24.95, but bookstores get a 40%
+discount. Shipping costs $3 for the first copy and 75 cents for each
+additional copy. What is the total wholesale cost for 60 copies?</li>
+<li>If I leave my house at 6:52 am and run 1 mile at an easy pace (8:15
+per mile), then 3 miles at tempo (7:12 per mile) and 1 mile at easy
+pace again, what time do I get home for breakfast?</li>
+</ol>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Variables, expressions and statements</a><ul>
+<li><a class="reference internal" href="#assignment-statements">Assignment statements</a></li>
+<li><a class="reference internal" href="#variable-names">Variable names</a></li>
+<li><a class="reference internal" href="#expressions-and-statements">Expressions and statements</a></li>
+<li><a class="reference internal" href="#script-mode">Script mode</a></li>
+<li><a class="reference internal" href="#order-of-operations">Order of operations</a></li>
+<li><a class="reference internal" href="#string-operations">String operations</a></li>
+<li><a class="reference internal" href="#comments">Comments</a></li>
+<li><a class="reference internal" href="#debugging">Debugging</a></li>
+<li><a class="reference internal" href="#glossary">Glossary</a></li>
+<li><a class="reference internal" href="#exercises">Exercises</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="01-the-way.html" title="previous chapter">The way of the program</a></li>
+      <li>Next: <a href="03-function.html" title="next chapter">Functions</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/02-statement.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Allen B. Downey.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
+      |
+      <a href="_sources/02-statement.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

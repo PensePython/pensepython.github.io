@@ -1,0 +1,628 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Files &mdash; Pense Python 2e documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2e',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Pense Python 2e documentation" href="index.html" />
+    <link rel="next" title="Classes and objects" href="15-cls-object.html" />
+    <link rel="prev" title="Case study: data structure selection" href="13-case-struct.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="files">
+<h1>Files<a class="headerlink" href="#files" title="Permalink to this headline">¶</a></h1>
+<p>This chapter introduces the idea of “persistent” programs that keep data
+in permanent storage, and shows how to use different kinds of permanent
+storage, like files and databases.</p>
+<div class="section" id="persistence">
+<h2>Persistence<a class="headerlink" href="#persistence" title="Permalink to this headline">¶</a></h2>
+<p>Most of the programs we have seen so far are transient in the sense that
+they run for a short time and produce some output, but when they end,
+their data disappears. If you run the program again, it starts with a
+clean slate.</p>
+<p>Other programs are <strong>persistent</strong>: they run for a long time (or all the
+time); they keep at least some of their data in permanent storage (a
+hard drive, for example); and if they shut down and restart, they pick
+up where they left off.</p>
+<p>Examples of persistent programs are operating systems, which run pretty
+much whenever a computer is on, and web servers, which run all the time,
+waiting for requests to come in on the network.</p>
+<p>One of the simplest ways for programs to maintain their data is by
+reading and writing text files. We have already seen programs that read
+text files; in this chapter we will see programs that write them.</p>
+<p>An alternative is to store the state of the program in a database. In
+this chapter I will present a simple database and a module, pickle, that
+makes it easy to store program data.</p>
+</div>
+<div class="section" id="reading-and-writing">
+<h2>Reading and writing<a class="headerlink" href="#reading-and-writing" title="Permalink to this headline">¶</a></h2>
+<p>A text file is a sequence of characters stored on a permanent medium
+like a hard drive, flash memory, or CD-ROM. We saw how to open and read
+a file in Section&nbsp;[wordlist].</p>
+<p>To write a file, you have to open it with mode <code class="docutils literal"><span class="pre">'w'</span></code> as a second
+parameter:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">fout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;output.txt&#39;</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If the file already exists, opening it in write mode clears out the old
+data and starts fresh, so be careful! If the file doesn’t exist, a new
+one is created.</p>
+<p>open returns a file object that provides methods for working with the
+file. The write method puts data into the file.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">line1</span> <span class="o">=</span> <span class="s">&quot;This here&#39;s the wattle,</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line1</span><span class="p">)</span>
+<span class="go">24</span>
+</pre></div>
+</div>
+<p>The return value is the number of characters that were written. The file
+object keeps track of where it is, so if you call write again, it adds
+the new data to the end of the file.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">line2</span> <span class="o">=</span> <span class="s">&quot;the emblem of our land.</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line2</span><span class="p">)</span>
+<span class="go">24</span>
+</pre></div>
+</div>
+<p>When you are done writing, you should close the file.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">fout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>If you don’t close the file, it gets closed for you when the program
+ends.</p>
+</div>
+<div class="section" id="format-operator">
+<h2>Format operator<a class="headerlink" href="#format-operator" title="Permalink to this headline">¶</a></h2>
+<p>The argument of write has to be a string, so if we want to put other
+values in a file, we have to convert them to strings. The easiest way to
+do that is with str:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="mi">52</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>An alternative is to use the <strong>format operator</strong>, %. When applied to
+integers, % is the modulus operator. But when the first operand is a
+string, % is the format operator.</p>
+<p>The first operand is the <strong>format string</strong>, which contains one or more
+<strong>format sequences</strong>, which specify how the second operand is formatted.
+The result is a string.</p>
+<p>For example, the format sequence <code class="docutils literal"><span class="pre">'%d'</span></code> means that the second operand
+should be formatted as a decimal integer:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">camels</span> <span class="o">=</span> <span class="mi">42</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s">&#39;</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">camels</span>
+<span class="go">&#39;42&#39;</span>
+</pre></div>
+</div>
+<p>The result is the string <code class="docutils literal"><span class="pre">'42'</span></code>, which is not to be confused with the
+integer value 42.</p>
+<p>A format sequence can appear anywhere in the string, so you can embed a
+value in a sentence:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="s">&#39;I have spotted </span><span class="si">%d</span><span class="s"> camels.&#39;</span> <span class="o">%</span> <span class="n">camels</span>
+<span class="go">&#39;I have spotted 42 camels.&#39;</span>
+</pre></div>
+</div>
+<p>If there is more than one format sequence in the string, the second
+argument has to be a tuple. Each format sequence is matched with an
+element of the tuple, in order.</p>
+<p>The following example uses <code class="docutils literal"><span class="pre">'%d'</span></code> to format an integer, <code class="docutils literal"><span class="pre">'%g'</span></code> to
+format a floating-point number, and <code class="docutils literal"><span class="pre">'%s'</span></code> to format a string:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="s">&#39;In </span><span class="si">%d</span><span class="s"> years I have spotted </span><span class="si">%g</span><span class="s"> </span><span class="si">%s</span><span class="s">.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="s">&#39;camels&#39;</span><span class="p">)</span>
+<span class="go">&#39;In 3 years I have spotted 0.1 camels.&#39;</span>
+</pre></div>
+</div>
+<p>The number of elements in the tuple has to match the number of format
+sequences in the string. Also, the types of the elements have to match
+the format sequences:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="s">&#39;</span><span class="si">%d</span><span class="s"> </span><span class="si">%d</span><span class="s"> </span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">TypeError: not enough arguments for format string</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s">&#39;</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="s">&#39;dollars&#39;</span>
+<span class="go">TypeError: %d format: a number is required, not str</span>
+</pre></div>
+</div>
+<p>In the first example, there aren’t enough elements; in the second, the
+element is the wrong type.</p>
+<p>For more information on the format operator, see
+<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#printf-style-string-formatting">https://docs.python.org/3/library/stdtypes.html#printf-style-string-formatting</a>.
+A more powerful alternative is the string format method, which you can
+read about at
+<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str.format">https://docs.python.org/3/library/stdtypes.html#str.format</a>.</p>
+</div>
+<div class="section" id="filenames-and-paths">
+<h2>Filenames and paths<a class="headerlink" href="#filenames-and-paths" title="Permalink to this headline">¶</a></h2>
+<p>Files are organized into <strong>directories</strong> (also called “folders”). Every
+running program has a “current directory”, which is the default
+directory for most operations. For example, when you open a file for
+reading, Python looks for it in the current directory.</p>
+<p>The os module provides functions for working with files and directories
+(“os” stands for “operating system”). os.getcwd returns the name of the
+current directory:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cwd</span>
+<span class="go">&#39;/home/dinsdale&#39;</span>
+</pre></div>
+</div>
+<p>cwd stands for “current working directory”. The result in this example
+is /home/dinsdale, which is the home directory of a user named dinsdale.</p>
+<p>A string like <code class="docutils literal"><span class="pre">'/home/dinsdale'</span></code> that identifies a file or directory
+is called a <strong>path</strong>.</p>
+<p>A simple filename, like memo.txt is also considered a path, but it is a
+<strong>relative path</strong> because it relates to the current directory. If the
+current directory is /home/dinsdale, the filename memo.txt would refer
+to /home/dinsdale/memo.txt.</p>
+<p>A path that begins with / does not depend on the current directory; it
+is called an <strong>absolute path</strong>. To find the absolute path to a file, you
+can use os.path.abspath:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s">&#39;memo.txt&#39;</span><span class="p">)</span>
+<span class="go">&#39;/home/dinsdale/memo.txt&#39;</span>
+</pre></div>
+</div>
+<p>os.path provides other functions for working with filenames and paths.
+For example, os.path.exists checks whether a file or directory exists:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s">&#39;memo.txt&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>If it exists, os.path.isdir checks whether it’s a directory:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="s">&#39;memo.txt&#39;</span><span class="p">)</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="s">&#39;/home/dinsdale&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>Similarly, os.path.isfile checks whether it’s a file.</p>
+<p>os.listdir returns a list of the files (and other directories) in the
+given directory:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">cwd</span><span class="p">)</span>
+<span class="go">[&#39;music&#39;, &#39;photos&#39;, &#39;memo.txt&#39;]</span>
+</pre></div>
+</div>
+<p>To demonstrate these functions, the following example “walks” through a
+directory, prints the names of all the files, and calls itself
+recursively on all the directories.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">walk</span><span class="p">(</span><span class="n">dirname</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">dirname</span><span class="p">):</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">walk</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>os.path.join takes a directory and a file name and joins them into a
+complete path.</p>
+<p>The os module provides a function called walk that is similar to this
+one but more versatile. As an exercise, read the documentation and use
+it to print the names of the files in a given directory and its
+subdirectories. You can download my solution from
+<a class="reference external" href="http://thinkpython2.com/code/walk.py">http://thinkpython2.com/code/walk.py</a>.</p>
+</div>
+<div class="section" id="catching-exceptions">
+<h2>Catching exceptions<a class="headerlink" href="#catching-exceptions" title="Permalink to this headline">¶</a></h2>
+<p>A lot of things can go wrong when you try to read and write files. If
+you try to open a file that doesn’t exist, you get an IOError:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">fin</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;bad_file&#39;</span><span class="p">)</span>
+<span class="go">IOError: [Errno 2] No such file or directory: &#39;bad_file&#39;</span>
+</pre></div>
+</div>
+<p>If you don’t have permission to access a file:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">fout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;/etc/passwd&#39;</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+<span class="go">PermissionError: [Errno 13] Permission denied: &#39;/etc/passwd&#39;</span>
+</pre></div>
+</div>
+<p>And if you try to open a directory for reading, you get</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">fin</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;/home&#39;</span><span class="p">)</span>
+<span class="go">IsADirectoryError: [Errno 21] Is a directory: &#39;/home&#39;</span>
+</pre></div>
+</div>
+<p>To avoid these errors, you could use functions like os.path.exists and
+os.path.isfile, but it would take a lot of time and code to check all
+the possibilities (if “Errno 21” is any indication, there are at least
+21 things that can go wrong).</p>
+<p>It is better to go ahead and try—and deal with problems if they
+happen—which is exactly what the try statement does. The syntax is
+similar to an if...else statement:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">try</span><span class="p">:</span>
+    <span class="n">fin</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;bad_file&#39;</span><span class="p">)</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&#39;Something went wrong.&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Python starts by executing the try clause. If all goes well, it skips
+the except clause and proceeds. If an exception occurs, it jumps out of
+the try clause and runs the except clause.</p>
+<p>Handling an exception with a try statement is called <strong>catching</strong> an
+exception. In this example, the except clause prints an error message
+that is not very helpful. In general, catching an exception gives you a
+chance to fix the problem, or try again, or at least end the program
+gracefully.</p>
+</div>
+<div class="section" id="databases">
+<h2>Databases<a class="headerlink" href="#databases" title="Permalink to this headline">¶</a></h2>
+<p>A <strong>database</strong> is a file that is organized for storing data. Many
+databases are organized like a dictionary in the sense that they map
+from keys to values. The biggest difference between a database and a
+dictionary is that the database is on disk (or other permanent storage),
+so it persists after the program ends.</p>
+<p>The module dbm provides an interface for creating and updating database
+files. As an example, I’ll create a database that contains captions for
+image files.</p>
+<p>Opening a database is similar to opening other files:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">dbm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">dbm</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s">&#39;captions&#39;</span><span class="p">,</span> <span class="s">&#39;c&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The mode <code class="docutils literal"><span class="pre">'c'</span></code> means that the database should be created if it doesn’t
+already exist. The result is a database object that can be used (for
+most operations) like a dictionary.</p>
+<p>When you create a new item, dbm updates the database file.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s">&#39;cleese.png&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;Photo of John Cleese.&#39;</span>
+</pre></div>
+</div>
+<p>When you access one of the items, dbm reads the file:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s">&#39;cleese.png&#39;</span><span class="p">]</span>
+<span class="go">b&#39;Photo of John Cleese.&#39;</span>
+</pre></div>
+</div>
+<p>The result is a <strong>bytes object</strong>, which is why it begins with b. A bytes
+object is similar to a string in many ways. When you get farther into
+Python, the difference becomes important, but for now we can ignore it.</p>
+<p>If you make another assignment to an existing key, dbm replaces the old
+value:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s">&#39;cleese.png&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;Photo of John Cleese doing a silly walk.&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">[</span><span class="s">&#39;cleese.png&#39;</span><span class="p">]</span>
+<span class="go">b&#39;Photo of John Cleese doing a silly walk.&#39;</span>
+</pre></div>
+</div>
+<p>Some dictionary methods, like keys and items, don’t work with database
+objects. But iteration with a for loop works:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">db</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">db</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>As with other files, you should close the database when you are done:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="pickling">
+<h2>Pickling<a class="headerlink" href="#pickling" title="Permalink to this headline">¶</a></h2>
+<p>A limitation of dbm is that the keys and values have to be strings or
+bytes. If you try to use any other type, you get an error.</p>
+<p>The pickle module can help. It translates almost any type of object into
+a string suitable for storage in a database, and then translates strings
+back into objects.</p>
+<p>pickle.dumps takes an object as a parameter and returns a string
+representation (dumps is short for “dump string”):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pickle</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="go">b&#39;\x80\x03]q\x00(K\x01K\x02K\x03e.&#39;</span>
+</pre></div>
+</div>
+<p>The format isn’t obvious to human readers; it is meant to be easy for
+pickle to interpret. pickle.loads (“load string”) reconstitutes the
+object:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">t1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t2</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t2</span>
+<span class="go">[1, 2, 3]</span>
+</pre></div>
+</div>
+<p>Although the new object has the same value as the old, it is not (in
+general) the same object:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t1</span> <span class="o">==</span> <span class="n">t2</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t1</span> <span class="ow">is</span> <span class="n">t2</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<p>In other words, pickling and then unpickling has the same effect as
+copying the object.</p>
+<p>You can use pickle to store non-strings in a database. In fact, this
+combination is so common that it has been encapsulated in a module
+called shelve.</p>
+</div>
+<div class="section" id="pipes">
+<h2>Pipes<a class="headerlink" href="#pipes" title="Permalink to this headline">¶</a></h2>
+<p>Most operating systems provide a command-line interface, also known as a
+<strong>shell</strong>. Shells usually provide commands to navigate the file system
+and launch applications. For example, in Unix you can change directories
+with cd, display the contents of a directory with ls, and launch a web
+browser by typing (for example) firefox.</p>
+<p>Any program that you can launch from the shell can also be launched from
+Python using a <strong>pipe object</strong>, which represents a running program.</p>
+<p>For example, the Unix command ls -l normally displays the contents of
+the current directory in long format. You can launch ls with
+os.popen <a href="#id2"><span class="problematic" id="id3"><span id="id1"></span>[1]_</span></a>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39;ls -l&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fp</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">popen</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The argument is a string that contains a shell command. The return value
+is an object that behaves like an open file. You can read the output
+from the ls process one line at a time with readline or get the whole
+thing at once with read:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">res</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>When you are done, you close the pipe like a file:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">stat</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">stat</span><span class="p">)</span>
+<span class="go">None</span>
+</pre></div>
+</div>
+<p>The return value is the final status of the ls process; None means that
+it ended normally (with no errors).</p>
+<p>For example, most Unix systems provide a command called md5sum that
+reads the contents of a file and computes a “checksum”. You can read
+about MD5 at <a class="reference external" href="http://en.wikipedia.org/wiki/Md5">http://en.wikipedia.org/wiki/Md5</a>. This command provides an
+efficient way to check whether two files have the same contents. The
+probability that different contents yield the same checksum is very
+small (that is, unlikely to happen before the universe collapses).</p>
+<p>You can use a pipe to run md5sum from Python and get the result:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">filename</span> <span class="o">=</span> <span class="s">&#39;book.tex&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39;md5sum &#39;</span> <span class="o">+</span> <span class="n">filename</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fp</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">popen</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stat</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="go">1e0033f0ed0656636de0d75144ba32e0  book.tex</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">stat</span><span class="p">)</span>
+<span class="go">None</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="writing-modules">
+<h2>Writing modules<a class="headerlink" href="#writing-modules" title="Permalink to this headline">¶</a></h2>
+<p>Any file that contains Python code can be imported as a module. For
+example, suppose you have a file named wc.py with the following code:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">linecount</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+        <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">count</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">linecount</span><span class="p">(</span><span class="s">&#39;wc.py&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>If you run this program, it reads itself and prints the number of lines
+in the file, which is 7. You can also import it like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">wc</span>
+<span class="go">7</span>
+</pre></div>
+</div>
+<p>Now you have a module object wc:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">wc</span>
+<span class="go">&lt;module &#39;wc&#39; from &#39;wc.py&#39;&gt;</span>
+</pre></div>
+</div>
+<p>The module object provides <code class="docutils literal"><span class="pre">linecount</span></code>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">wc</span><span class="o">.</span><span class="n">linecount</span><span class="p">(</span><span class="s">&#39;wc.py&#39;</span><span class="p">)</span>
+<span class="go">7</span>
+</pre></div>
+</div>
+<p>So that’s how you write modules in Python.</p>
+<p>The only problem with this example is that when you import the module it
+runs the test code at the bottom. Normally when you import a module, it
+defines new functions but it doesn’t run them.</p>
+<p>Programs that will be imported as modules often use the following idiom:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">linecount</span><span class="p">(</span><span class="s">&#39;wc.py&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">__name__</span></code> is a built-in variable that is set when the program starts.
+If the program is running as a script, <code class="docutils literal"><span class="pre">__name__</span></code> has the value
+<code class="docutils literal"><span class="pre">'__main__'</span></code>; in that case, the test code runs. Otherwise, if the
+module is being imported, the test code is skipped.</p>
+<p>As an exercise, type this example into a file named wc.py and run it as
+a script. Then run the Python interpreter and import wc. What is the
+value of <code class="docutils literal"><span class="pre">__name__</span></code> when the module is being imported?</p>
+<p>Warning: If you import a module that has already been imported, Python
+does nothing. It does not re-read the file, even if it has changed.</p>
+<p>If you want to reload a module, you can use the built-in function
+reload, but it can be tricky, so the safest thing to do is restart the
+interpreter and then import the module again.</p>
+</div>
+<div class="section" id="debugging">
+<h2>Debugging<a class="headerlink" href="#debugging" title="Permalink to this headline">¶</a></h2>
+<p>When you are reading and writing files, you might run into problems with
+whitespace. These errors can be hard to debug because spaces, tabs and
+newlines are normally invisible:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="s">&#39;1 2</span><span class="se">\t</span><span class="s"> 3</span><span class="se">\n</span><span class="s"> 4&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="go">1 2  3</span>
+<span class="go"> 4</span>
+</pre></div>
+</div>
+<p>The built-in function repr can help. It takes any object as an argument
+and returns a string representation of the object. For strings, it
+represents whitespace characters with backslash sequences:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
+<span class="go">&#39;1 2\t 3\n 4&#39;</span>
+</pre></div>
+</div>
+<p>This can be helpful for debugging.</p>
+<p>One other problem you might run into is that different systems use
+different characters to indicate the end of a line. Some systems use a
+newline, represented <code class="docutils literal"><span class="pre">\n</span></code>. Others use a return character, represented
+<code class="docutils literal"><span class="pre">\r</span></code>. Some use both. If you move files between different systems,
+these inconsistencies can cause problems.</p>
+<p>For most systems, there are applications to convert from one format to
+another. You can find them (and read more about this issue) at
+<a class="reference external" href="http://en.wikipedia.org/wiki/Newline">http://en.wikipedia.org/wiki/Newline</a>. Or, of course, you could write one
+yourself.</p>
+</div>
+<div class="section" id="glossary">
+<span id="glossary14"></span><h2>Glossary<a class="headerlink" href="#glossary" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>persistente (<em>persistent</em>)</dt>
+<dd>Pertaining to a program that runs indefinitely and keeps at least some of its data in permanent storage.</dd>
+<dt>operador de formatação (<em>format operator</em>)</dt>
+<dd>An operator, %, that takes a format string and a tuple and generates a string that includes the elements of the tuple formatted as specified by the format string.</dd>
+<dt>string de formatação (<em>format string</em>)</dt>
+<dd>A string, used with the format operator, that contains format sequences.</dd>
+<dt>sequência de formatação (<em>format sequence</em>)</dt>
+<dd>A sequence of characters in a format string, like %d, that specifies how a value should be formatted.</dd>
+<dt>arquivo-texto (<em>text file</em>)</dt>
+<dd>A sequence of characters stored in permanent storage like a hard drive.</dd>
+<dt>diretório (<em>directory</em>)</dt>
+<dd>A named collection of files, also called a folder.</dd>
+<dt>caminho (<em>path</em>)</dt>
+<dd>A string that identifies a file.</dd>
+<dt>caminho relativo (<em>relative path</em>)</dt>
+<dd>A path that starts from the current directory.</dd>
+<dt>caminho absoluto (<em>absolute path</em>)</dt>
+<dd>A path that starts from the topmost directory in the file system.</dd>
+<dt>capturar (<em>catch</em>)</dt>
+<dd>To prevent an exception from terminating a program using the try and except statements.</dd>
+<dt>banco de dados (<em>database</em>)</dt>
+<dd>A file whose contents are organized like a dictionary with keys that correspond to values.</dd>
+<dt>objeto <code class="docutils literal"><span class="pre">bytes</span></code> (<code class="docutils literal"><span class="pre">bytes</span></code> <em>object</em>)</dt>
+<dd>An object similar to a string.</dd>
+<dt><em>shell</em></dt>
+<dd>A program that allows users to type commands and then executes them by starting other programs.</dd>
+<dt>objeto “pipe” (<em>pipe object</em>)</dt>
+<dd>An object that represents a running program, allowing a Python program to run commands and read the results.</dd>
+</dl>
+</div>
+<div class="section" id="exercises">
+<h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
+<p>Write a function called sed that takes as arguments a pattern string, a
+replacement string, and two filenames; it should read the first file and
+write the contents into the second file (creating it if necessary). If
+the pattern string appears anywhere in the file, it should be replaced
+with the replacement string.</p>
+<p>If an error occurs while opening, reading, writing or closing files,
+your program should catch the exception, print an error message, and
+exit. Solution: <a class="reference external" href="http://thinkpython2.com/code/sed.py">http://thinkpython2.com/code/sed.py</a>.</p>
+<p>If you download my solution to Exercise&nbsp;[anagrams] from
+<a class="reference external" href="http://thinkpython2.com/code/anagram_sets.py">http://thinkpython2.com/code/anagram_sets.py</a>, you’ll see that it creates
+a dictionary that maps from a sorted string of letters to the list of
+words that can be spelled with those letters. For example, <code class="docutils literal"><span class="pre">'opst'</span></code>
+maps to the list <code class="docutils literal"><span class="pre">['opts',</span> <span class="pre">'post',</span> <span class="pre">'pots',</span> <span class="pre">'spot',</span> <span class="pre">'stop',</span> <span class="pre">'tops']</span></code>.</p>
+<p>Write a module that imports <code class="docutils literal"><span class="pre">anagram_sets</span></code> and provides two new
+functions: <code class="docutils literal"><span class="pre">store_anagrams</span></code> should store the anagram dictionary in a
+“shelf”; <code class="docutils literal"><span class="pre">read_anagrams</span></code> should look up a word and return a list of
+its anagrams. Solution: <a class="reference external" href="http://thinkpython2.com/code/anagram_db.py">http://thinkpython2.com/code/anagram_db.py</a>.</p>
+<p>[checksum]</p>
+<p>In a large collection of MP3 files, there may be more than one copy of
+the same song, stored in different directories or with different file
+names. The goal of this exercise is to search for duplicates.</p>
+<ol class="arabic simple">
+<li>Write a program that searches a directory and all of its
+subdirectories, recursively, and returns a list of complete paths for
+all files with a given suffix (like .mp3). Hint: os.path provides
+several useful functions for manipulating file and path names.</li>
+<li>To recognize duplicates, you can use md5sum to compute a “checksum”
+for each files. If two files have the same checksum, they probably
+have the same contents.</li>
+<li>To double-check, you can use the Unix command diff.</li>
+</ol>
+<p>Solution: <a class="reference external" href="http://thinkpython2.com/code/find_duplicates.py">http://thinkpython2.com/code/find_duplicates.py</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Files</a><ul>
+<li><a class="reference internal" href="#persistence">Persistence</a></li>
+<li><a class="reference internal" href="#reading-and-writing">Reading and writing</a></li>
+<li><a class="reference internal" href="#format-operator">Format operator</a></li>
+<li><a class="reference internal" href="#filenames-and-paths">Filenames and paths</a></li>
+<li><a class="reference internal" href="#catching-exceptions">Catching exceptions</a></li>
+<li><a class="reference internal" href="#databases">Databases</a></li>
+<li><a class="reference internal" href="#pickling">Pickling</a></li>
+<li><a class="reference internal" href="#pipes">Pipes</a></li>
+<li><a class="reference internal" href="#writing-modules">Writing modules</a></li>
+<li><a class="reference internal" href="#debugging">Debugging</a></li>
+<li><a class="reference internal" href="#glossary">Glossary</a></li>
+<li><a class="reference internal" href="#exercises">Exercises</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="13-case-struct.html" title="previous chapter">Case study: data structure selection</a></li>
+      <li>Next: <a href="15-cls-object.html" title="next chapter">Classes and objects</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/14-file.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Allen B. Downey.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
+      |
+      <a href="_sources/14-file.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

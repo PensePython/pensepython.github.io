@@ -1,0 +1,45 @@
+divisão pelo piso (*floor division*)
+  An operator, denoted //, that divides two numbers and rounds down (toward zero) to an integer.
+
+operador de módulo (*modulus operator*)
+  An operator, denoted with a percent sign (%), that works on integers and returns the remainder when one number is divided by another.
+
+expressão booleana (*boolean expression*)
+  An expression whose value is either True or False.
+
+operador relacional (*relational operator*)
+  One of the operators that compares its operands: ==, !=, >, <, >=, and <=.
+
+operador lógico (*logical operator*)
+  One of the operators that combines boolean expressions: and, or, and not.
+
+instrução condicional (*conditional statement*)
+  A statement that controls the flow of execution depending on some condition.
+
+condição (*condition*)
+  The boolean expression in a conditional statement that determines which branch runs.
+
+instrução composta (*compound statement*)
+  A statement that consists of a header and a body. The header ends with a colon (:). The body is indented relative to the header.
+
+desvio (*branch*)
+  One of the alternative sequences of statements in a conditional statement.
+
+condicional encadeado (*chained conditional*)
+  A conditional statement with a series of alternative branches.
+
+condicional aninhado (*nested conditional*)
+  A conditional statement that appears in one of the branches of another conditional statement.
+
+instrução ``return`` (*``return`` statement*)
+  A statement that causes a function to end immediately and return to the caller.
+
+recursão (*recursion*)
+  The process of calling the function that is currently executing.
+
+caso base (*base case*)
+  A conditional branch in a recursive function that does not make a recursive call.
+
+recursão infinita (*infinite recursion*)
+  A recursion that doesn’t have a base case, or never reaches it. Eventually, an infinite recursion causes a runtime error.
+

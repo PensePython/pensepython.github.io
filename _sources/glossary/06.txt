@@ -1,0 +1,15 @@
+variável temporária (*temporary variable*)
+  A variable used to store an intermediate value in a complex calculation.
+
+código morto (*dead code*)
+  Part of a program that can never run, often because it appears after a return statement.
+
+desenvolvimento incremental (*incremental development*)
+  A program development plan intended to avoid debugging by adding and testing only a small amount of code at a time.
+
+código provisório (*scaffolding*)
+  Code that is used during program development but is not part of the final version.
+
+guarda (*guardian*)
+  A programming pattern that uses a conditional statement to check for and handle circumstances that might cause an error.
+

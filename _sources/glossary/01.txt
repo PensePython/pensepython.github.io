@@ -1,0 +1,63 @@
+solução de problemas (*problem solving*)
+  The process of formulating a problem, finding a solution, and expressing it.
+
+linguagem de alto nível (*high-level language*)
+  A programming language like Python that is designed to be easy for humans to read and write.
+
+linguagem de baixo nível (*low-level language*)
+  A programming language that is designed to be easy for a computer to run; also called “machine language” or “assembly language”.
+
+portabilidade (*portability*)
+  A property of a program that can run on more than one kind of computer.
+
+interpretador (*interpreter*)
+  A program that reads another program and executes it
+
+*prompt* (“sinal de pronto”)
+  Characters displayed by the interpreter to indicate that it is ready to take input from the user.
+
+programação funcional (*program*)
+  A set of instructions that specifies a computation.
+
+instrução ``print`` (*``print`` statement*)
+  An instruction that causes the Python interpreter to display a value on the screen.
+
+operador (*operator*)
+  A special symbol that represents a simple computation like addition, multiplication, or string concatenation.
+
+valor (*value*)
+  One of the basic units of data, like a number or string, that a program manipulates.
+
+tipo (*type*)
+  A category of values. The types we have seen so far are integers (type int), floating-point numbers (type float), and strings (type str).
+
+inteiro (*integer*)
+  A type that represents whole numbers.
+
+ponto-flutuante (*floating-point*)
+  A type that represents numbers with fractional parts.
+
+*string* (“cadeia (de caracteres)”)
+  A type that represents sequences of characters.
+
+linguagem natural (*natural language*)
+  Any one of the languages that people speak that evolved naturally.
+
+linguagem formal (*formal language*)
+  Any one of the languages that people have designed for specific purposes, such as representing mathematical ideas or computer programs; all programming languages are formal languages.
+
+*token* (“símbolo”)
+  One of the basic elements of the syntactic structure of a program, analogous to a word in a natural language.
+
+sintaxe (*syntax*)
+  The rules that govern the structure of a program.
+
+analisar (*parse*)
+  To examine a program and analyze the syntactic structure.
+
+*bug*
+  An error in a program.
+
+depuração (*debugging*)
+  The process of finding and correcting bugs.
+

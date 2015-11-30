@@ -1,0 +1,419 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Classes and functions &mdash; Pense Python 2e documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2e',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Pense Python 2e documentation" href="index.html" />
+    <link rel="next" title="Classes and methods" href="17-cls-meth.html" />
+    <link rel="prev" title="Classes and objects" href="15-cls-object.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="classes-and-functions">
+<h1>Classes and functions<a class="headerlink" href="#classes-and-functions" title="Permalink to this headline">¶</a></h1>
+<p>Now that we know how to create new types, the next step is to write
+functions that take programmer-defined objects as parameters and return
+them as results. In this chapter I also present “functional programming
+style” and two new program development plans.</p>
+<p>Code examples from this chapter are available from
+<a class="reference external" href="http://thinkpython2.com/code/Time1.py">http://thinkpython2.com/code/Time1.py</a>. Solutions to the exercises are at
+<a class="reference external" href="http://thinkpython2.com/code/Time1_soln.py">http://thinkpython2.com/code/Time1_soln.py</a>.</p>
+<div class="section" id="time">
+<h2>Time<a class="headerlink" href="#time" title="Permalink to this headline">¶</a></h2>
+<p>As another example of a programmer-defined type, we’ll define a class
+called Time that records the time of day. The class definition looks
+like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">Time</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Represents the time of day.</span>
+
+<span class="sd">    attributes: hour, minute, second</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+</pre></div>
+</div>
+<p>We can create a new Time object and assign attributes for hours,
+minutes, and seconds:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">time</span> <span class="o">=</span> <span class="n">Time</span><span class="p">()</span>
+<span class="n">time</span><span class="o">.</span><span class="n">hour</span> <span class="o">=</span> <span class="mi">11</span>
+<span class="n">time</span><span class="o">.</span><span class="n">minute</span> <span class="o">=</span> <span class="mi">59</span>
+<span class="n">time</span><span class="o">.</span><span class="n">second</span> <span class="o">=</span> <span class="mi">30</span>
+</pre></div>
+</div>
+<p>The state diagram for the Time object looks like Figure&nbsp;[fig.time].</p>
+<p>As an exercise, write a function called <code class="docutils literal"><span class="pre">print_time</span></code> that takes a Time
+object and prints it in the form hour:minute:second. Hint: the format
+sequence <code class="docutils literal"><span class="pre">'%.2d'</span></code> prints an integer using at least two digits,
+including a leading zero if necessary.</p>
+<p>Write a boolean function called <code class="docutils literal"><span class="pre">is_after</span></code> that takes two Time
+objects, t1 and t2, and returns True if t1 follows t2 chronologically
+and False otherwise. Challenge: don’t use an if statement.</p>
+<div class="figure" id="id1">
+<img alt="Object diagram." src="_images/time.pdf" />
+<p class="caption"><span class="caption-text">Object diagram.</span></p>
+</div>
+</div>
+<div class="section" id="pure-functions">
+<h2>Pure functions<a class="headerlink" href="#pure-functions" title="Permalink to this headline">¶</a></h2>
+<p>In the next few sections, we’ll write two functions that add time
+values. They demonstrate two kinds of functions: pure functions and
+modifiers. They also demonstrate a development plan I’ll call
+<strong>prototype and patch</strong>, which is a way of tackling a complex problem by
+starting with a simple prototype and incrementally dealing with the
+complications.</p>
+<p>Here is a simple prototype of <code class="docutils literal"><span class="pre">add_time</span></code>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">add_time</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">):</span>
+    <span class="nb">sum</span> <span class="o">=</span> <span class="n">Time</span><span class="p">()</span>
+    <span class="nb">sum</span><span class="o">.</span><span class="n">hour</span> <span class="o">=</span> <span class="n">t1</span><span class="o">.</span><span class="n">hour</span> <span class="o">+</span> <span class="n">t2</span><span class="o">.</span><span class="n">hour</span>
+    <span class="nb">sum</span><span class="o">.</span><span class="n">minute</span> <span class="o">=</span> <span class="n">t1</span><span class="o">.</span><span class="n">minute</span> <span class="o">+</span> <span class="n">t2</span><span class="o">.</span><span class="n">minute</span>
+    <span class="nb">sum</span><span class="o">.</span><span class="n">second</span> <span class="o">=</span> <span class="n">t1</span><span class="o">.</span><span class="n">second</span> <span class="o">+</span> <span class="n">t2</span><span class="o">.</span><span class="n">second</span>
+    <span class="k">return</span> <span class="nb">sum</span>
+</pre></div>
+</div>
+<p>The function creates a new Time object, initializes its attributes, and
+returns a reference to the new object. This is called a <strong>pure
+function</strong> because it does not modify any of the objects passed to it as
+arguments and it has no effect, like displaying a value or getting user
+input, other than returning a value.</p>
+<p>To test this function, I’ll create two Time objects: start contains the
+start time of a movie, like <em>Monty Python and the Holy Grail</em>, and
+duration contains the run time of the movie, which is one hour 35
+minutes.</p>
+<p><code class="docutils literal"><span class="pre">add_time</span></code> figures out when the movie will be done.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">start</span> <span class="o">=</span> <span class="n">Time</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">start</span><span class="o">.</span><span class="n">hour</span> <span class="o">=</span> <span class="mi">9</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">start</span><span class="o">.</span><span class="n">minute</span> <span class="o">=</span> <span class="mi">45</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">start</span><span class="o">.</span><span class="n">second</span> <span class="o">=</span>  <span class="mi">0</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">duration</span> <span class="o">=</span> <span class="n">Time</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">duration</span><span class="o">.</span><span class="n">hour</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">duration</span><span class="o">.</span><span class="n">minute</span> <span class="o">=</span> <span class="mi">35</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">duration</span><span class="o">.</span><span class="n">second</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">done</span> <span class="o">=</span> <span class="n">add_time</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">duration</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_time</span><span class="p">(</span><span class="n">done</span><span class="p">)</span>
+<span class="go">10:80:00</span>
+</pre></div>
+</div>
+<p>The result, 10:80:00 might not be what you were hoping for. The problem
+is that this function does not deal with cases where the number of
+seconds or minutes adds up to more than sixty. When that happens, we
+have to “carry” the extra seconds into the minute column or the extra
+minutes into the hour column.</p>
+<p>Here’s an improved version:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">add_time</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">):</span>
+    <span class="nb">sum</span> <span class="o">=</span> <span class="n">Time</span><span class="p">()</span>
+    <span class="nb">sum</span><span class="o">.</span><span class="n">hour</span> <span class="o">=</span> <span class="n">t1</span><span class="o">.</span><span class="n">hour</span> <span class="o">+</span> <span class="n">t2</span><span class="o">.</span><span class="n">hour</span>
+    <span class="nb">sum</span><span class="o">.</span><span class="n">minute</span> <span class="o">=</span> <span class="n">t1</span><span class="o">.</span><span class="n">minute</span> <span class="o">+</span> <span class="n">t2</span><span class="o">.</span><span class="n">minute</span>
+    <span class="nb">sum</span><span class="o">.</span><span class="n">second</span> <span class="o">=</span> <span class="n">t1</span><span class="o">.</span><span class="n">second</span> <span class="o">+</span> <span class="n">t2</span><span class="o">.</span><span class="n">second</span>
+
+    <span class="k">if</span> <span class="nb">sum</span><span class="o">.</span><span class="n">second</span> <span class="o">&gt;=</span> <span class="mi">60</span><span class="p">:</span>
+        <span class="nb">sum</span><span class="o">.</span><span class="n">second</span> <span class="o">-=</span> <span class="mi">60</span>
+        <span class="nb">sum</span><span class="o">.</span><span class="n">minute</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="nb">sum</span><span class="o">.</span><span class="n">minute</span> <span class="o">&gt;=</span> <span class="mi">60</span><span class="p">:</span>
+        <span class="nb">sum</span><span class="o">.</span><span class="n">minute</span> <span class="o">-=</span> <span class="mi">60</span>
+        <span class="nb">sum</span><span class="o">.</span><span class="n">hour</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="nb">sum</span>
+</pre></div>
+</div>
+<p>Although this function is correct, it is starting to get big. We will
+see a shorter alternative later.</p>
+</div>
+<div class="section" id="modifiers">
+<h2>Modifiers<a class="headerlink" href="#modifiers" title="Permalink to this headline">¶</a></h2>
+<p>Sometimes it is useful for a function to modify the objects it gets as
+parameters. In that case, the changes are visible to the caller.
+Functions that work this way are called <strong>modifiers</strong>.</p>
+<p>increment, which adds a given number of seconds to a Time object, can be
+written naturally as a modifier. Here is a rough draft:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">increment</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">seconds</span><span class="p">):</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">second</span> <span class="o">+=</span> <span class="n">seconds</span>
+
+    <span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">second</span> <span class="o">&gt;=</span> <span class="mi">60</span><span class="p">:</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">second</span> <span class="o">-=</span> <span class="mi">60</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">minute</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">minute</span> <span class="o">&gt;=</span> <span class="mi">60</span><span class="p">:</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">minute</span> <span class="o">-=</span> <span class="mi">60</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">hour</span> <span class="o">+=</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<p>The first line performs the basic operation; the remainder deals with
+the special cases we saw before.</p>
+<p>Is this function correct? What happens if seconds is much greater than
+sixty?</p>
+<p>In that case, it is not enough to carry once; we have to keep doing it
+until time.second is less than sixty. One solution is to replace the if
+statements with while statements. That would make the function correct,
+but not very efficient. As an exercise, write a correct version of
+increment that doesn’t contain any loops.</p>
+<p>Anything that can be done with modifiers can also be done with pure
+functions. In fact, some programming languages only allow pure
+functions. There is some evidence that programs that use pure functions
+are faster to develop and less error-prone than programs that use
+modifiers. But modifiers are convenient at times, and functional
+programs tend to be less efficient.</p>
+<p>In general, I recommend that you write pure functions whenever it is
+reasonable and resort to modifiers only if there is a compelling
+advantage. This approach might be called a <strong>functional programming
+style</strong>.</p>
+<p>As an exercise, write a “pure” version of increment that creates and
+returns a new Time object rather than modifying the parameter.</p>
+</div>
+<div class="section" id="prototyping-versus-planning">
+<h2>Prototyping versus planning<a class="headerlink" href="#prototyping-versus-planning" title="Permalink to this headline">¶</a></h2>
+<p>The development plan I am demonstrating is called “prototype and patch”.
+For each function, I wrote a prototype that performed the basic
+calculation and then tested it, patching errors along the way.</p>
+<p>This approach can be effective, especially if you don’t yet have a deep
+understanding of the problem. But incremental corrections can generate
+code that is unnecessarily complicated—since it deals with many special
+cases—and unreliable—since it is hard to know if you have found all the
+errors.</p>
+<p>An alternative is <strong>designed development</strong>, in which high-level insight
+into the problem can make the programming much easier. In this case, the
+insight is that a Time object is really a three-digit number in base 60
+(see <a class="reference external" href="http://en.wikipedia.org/wiki/Sexagesimal">http://en.wikipedia.org/wiki/Sexagesimal</a>.)! The second attribute is
+the “ones column”, the minute attribute is the “sixties column”, and the
+hour attribute is the “thirty-six hundreds column”.</p>
+<p>When we wrote <code class="docutils literal"><span class="pre">add_time</span></code> and increment, we were effectively doing
+addition in base 60, which is why we had to carry from one column to the
+next.</p>
+<p>This observation suggests another approach to the whole problem—we can
+convert Time objects to integers and take advantage of the fact that the
+computer knows how to do integer arithmetic.</p>
+<p>Here is a function that converts Times to integers:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">time_to_int</span><span class="p">(</span><span class="n">time</span><span class="p">):</span>
+    <span class="n">minutes</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">hour</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">+</span> <span class="n">time</span><span class="o">.</span><span class="n">minute</span>
+    <span class="n">seconds</span> <span class="o">=</span> <span class="n">minutes</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">+</span> <span class="n">time</span><span class="o">.</span><span class="n">second</span>
+    <span class="k">return</span> <span class="n">seconds</span>
+</pre></div>
+</div>
+<p>And here is a function that converts an integer to a Time (recall that
+divmod divides the first argument by the second and returns the quotient
+and remainder as a tuple).</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">int_to_time</span><span class="p">(</span><span class="n">seconds</span><span class="p">):</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">Time</span><span class="p">()</span>
+    <span class="n">minutes</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">second</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">seconds</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">hour</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">minute</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">minutes</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">time</span>
+</pre></div>
+</div>
+<p>You might have to think a bit, and run some tests, to convince yourself
+that these functions are correct. One way to test them is to check that
+<code class="docutils literal"><span class="pre">time_to_int(int_to_time(x))</span> <span class="pre">==</span> <span class="pre">x</span></code> for many values of x. This is an
+example of a consistency check.</p>
+<p>Once you are convinced they are correct, you can use them to rewrite
+<code class="docutils literal"><span class="pre">add_time</span></code>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">add_time</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">):</span>
+    <span class="n">seconds</span> <span class="o">=</span> <span class="n">time_to_int</span><span class="p">(</span><span class="n">t1</span><span class="p">)</span> <span class="o">+</span> <span class="n">time_to_int</span><span class="p">(</span><span class="n">t2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">int_to_time</span><span class="p">(</span><span class="n">seconds</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This version is shorter than the original, and easier to verify. As an
+exercise, rewrite increment using <code class="docutils literal"><span class="pre">time_to_int</span></code> and <code class="docutils literal"><span class="pre">int_to_time</span></code>.</p>
+<p>In some ways, converting from base 60 to base 10 and back is harder than
+just dealing with times. Base conversion is more abstract; our intuition
+for dealing with time values is better.</p>
+<p>But if we have the insight to treat times as base 60 numbers and make
+the investment of writing the conversion functions (<code class="docutils literal"><span class="pre">time_to_int</span></code> and
+<code class="docutils literal"><span class="pre">int_to_time</span></code>), we get a program that is shorter, easier to read and
+debug, and more reliable.</p>
+<p>It is also easier to add features later. For example, imagine
+subtracting two Times to find the duration between them. The naive
+approach would be to implement subtraction with borrowing. Using the
+conversion functions would be easier and more likely to be correct.</p>
+<p>Ironically, sometimes making a problem harder (or more general) makes it
+easier (because there are fewer special cases and fewer opportunities
+for error).</p>
+</div>
+<div class="section" id="debugging">
+<h2>Debugging<a class="headerlink" href="#debugging" title="Permalink to this headline">¶</a></h2>
+<p>A Time object is well-formed if the values of minute and second are
+between 0 and 60 (including 0 but not 60) and if hour is positive. hour
+and minute should be integral values, but we might allow second to have
+a fraction part.</p>
+<p>Requirements like these are called <strong>invariants</strong> because they should
+always be true. To put it a different way, if they are not true,
+something has gone wrong.</p>
+<p>Writing code to check invariants can help detect errors and find their
+causes. For example, you might have a function like <code class="docutils literal"><span class="pre">valid_time</span></code> that
+takes a Time object and returns False if it violates an invariant:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">valid_time</span><span class="p">(</span><span class="n">time</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">hour</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">time</span><span class="o">.</span><span class="n">minute</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">time</span><span class="o">.</span><span class="n">second</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">minute</span> <span class="o">&gt;=</span> <span class="mi">60</span> <span class="ow">or</span> <span class="n">time</span><span class="o">.</span><span class="n">second</span> <span class="o">&gt;=</span> <span class="mi">60</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="bp">True</span>
+</pre></div>
+</div>
+<p>At the beginning of each function you could check the arguments to make
+sure they are valid:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">add_time</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">valid_time</span><span class="p">(</span><span class="n">t1</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">valid_time</span><span class="p">(</span><span class="n">t2</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;invalid Time object in add_time&#39;</span><span class="p">)</span>
+    <span class="n">seconds</span> <span class="o">=</span> <span class="n">time_to_int</span><span class="p">(</span><span class="n">t1</span><span class="p">)</span> <span class="o">+</span> <span class="n">time_to_int</span><span class="p">(</span><span class="n">t2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">int_to_time</span><span class="p">(</span><span class="n">seconds</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Or you could use an <strong>assert statement</strong>, which checks a given invariant
+and raises an exception if it fails:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">add_time</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="n">valid_time</span><span class="p">(</span><span class="n">t1</span><span class="p">)</span> <span class="ow">and</span> <span class="n">valid_time</span><span class="p">(</span><span class="n">t2</span><span class="p">)</span>
+    <span class="n">seconds</span> <span class="o">=</span> <span class="n">time_to_int</span><span class="p">(</span><span class="n">t1</span><span class="p">)</span> <span class="o">+</span> <span class="n">time_to_int</span><span class="p">(</span><span class="n">t2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">int_to_time</span><span class="p">(</span><span class="n">seconds</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>assert statements are useful because they distinguish code that deals
+with normal conditions from code that checks for errors.</p>
+</div>
+<div class="section" id="glossary">
+<span id="glossary16"></span><h2>Glossary<a class="headerlink" href="#glossary" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>prototipar e ajustar (<em>prototype and patch</em>)</dt>
+<dd>A development plan that involves writing a rough draft of a program, testing, and correcting errors as they are found.</dd>
+<dt>desenvolvimento planejado (<em>designed development</em>)</dt>
+<dd>A development plan that involves high-level insight into the problem and more planning than incremental development or prototype development.</dd>
+<dt>função pura (<em>pure function</em>)</dt>
+<dd>A function that does not modify any of the objects it receives as arguments. Most pure functions are fruitful.</dd>
+<dt>modificadora (<em>modifier</em>)</dt>
+<dd>A function that changes one or more of the objects it receives as arguments. Most modifiers are void; that is, they return None.</dd>
+<dt>programação funcional (<em>functional programming style</em>)</dt>
+<dd>A style of program design in which the majority of functions are pure.</dd>
+<dt>invariante (<em>invariant</em>)</dt>
+<dd>A condition that should always be true during the execution of a program.</dd>
+<dt><code class="docutils literal"><span class="pre">assert</span></code>, instrução (<code class="docutils literal"><span class="pre">assert</span></code> <em>statement</em>)</dt>
+<dd>A statement that check a condition and raises an exception if it fails.</dd>
+</dl>
+</div>
+<div class="section" id="exercises">
+<h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
+<p>Code examples from this chapter are available from
+<a class="reference external" href="http://thinkpython2.com/code/Time1.py">http://thinkpython2.com/code/Time1.py</a>; solutions to the exercises are
+available from <a class="reference external" href="http://thinkpython2.com/code/Time1_soln.py">http://thinkpython2.com/code/Time1_soln.py</a>.</p>
+<p>Write a function called <code class="docutils literal"><span class="pre">mul_time</span></code> that takes a Time object and a
+number and returns a new Time object that contains the product of the
+original Time and the number.</p>
+<p>Then use <code class="docutils literal"><span class="pre">mul_time</span></code> to write a function that takes a Time object that
+represents the finishing time in a race, and a number that represents
+the distance, and returns a Time object that represents the average pace
+(time per mile).</p>
+<p>The datetime module provides time objects that are similar to the Time
+objects in this chapter, but they provide a rich set of methods and
+operators. Read the documentation at
+<a class="reference external" href="http://docs.python.org/3/library/datetime.html">http://docs.python.org/3/library/datetime.html</a>.</p>
+<ol class="arabic simple">
+<li>Use the datetime module to write a program that gets the current date
+and prints the day of the week.</li>
+<li>Write a program that takes a birthday as input and prints the user’s
+age and the number of days, hours, minutes and seconds until their
+next birthday.</li>
+<li>For two people born on different days, there is a day when one is
+twice as old as the other. That’s their Double Day. Write a program
+that takes two birthdays and computes their Double Day.</li>
+<li>For a little more challenge, write the more general version that
+computes the day when one person is <span class="math">n</span> times older than the
+other.</li>
+</ol>
+<p>Solution: <a class="reference external" href="http://thinkpython2.com/code/double.py">http://thinkpython2.com/code/double.py</a></p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Classes and functions</a><ul>
+<li><a class="reference internal" href="#time">Time</a></li>
+<li><a class="reference internal" href="#pure-functions">Pure functions</a></li>
+<li><a class="reference internal" href="#modifiers">Modifiers</a></li>
+<li><a class="reference internal" href="#prototyping-versus-planning">Prototyping versus planning</a></li>
+<li><a class="reference internal" href="#debugging">Debugging</a></li>
+<li><a class="reference internal" href="#glossary">Glossary</a></li>
+<li><a class="reference internal" href="#exercises">Exercises</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="15-cls-object.html" title="previous chapter">Classes and objects</a></li>
+      <li>Next: <a href="17-cls-meth.html" title="next chapter">Classes and methods</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/16-cls-fn.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Allen B. Downey.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
+      |
+      <a href="_sources/16-cls-fn.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

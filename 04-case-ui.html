@@ -1,0 +1,594 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Case study: interface design &mdash; Pense Python 2e documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2e',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Pense Python 2e documentation" href="index.html" />
+    <link rel="next" title="Conditionals and recursion" href="05-cond-recur.html" />
+    <link rel="prev" title="Functions" href="03-function.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="case-study-interface-design">
+<h1>Case study: interface design<a class="headerlink" href="#case-study-interface-design" title="Permalink to this headline">¶</a></h1>
+<p>This chapter presents a case study that demonstrates a process for
+designing functions that work together.</p>
+<p>It introduces the turtle module, which allows you to create images using
+turtle graphics. The turtle module is included in most Python
+installations, but if you are running Python using PythonAnywhere, you
+won’t be able to run the turtle examples (at least you couldn’t when I
+wrote this).</p>
+<p>If you have already installed Python on your computer, you should be
+able to run the examples. Otherwise, now is a good time to install. I
+have posted instructions at <a class="reference external" href="http://tinyurl.com/thinkpython2e">http://tinyurl.com/thinkpython2e</a>.</p>
+<p>Code examples from this chapter are available from
+<a class="reference external" href="http://thinkpython2.com/code/polygon.py">http://thinkpython2.com/code/polygon.py</a>.</p>
+<div class="section" id="the-turtle-module">
+<h2>The turtle module<a class="headerlink" href="#the-turtle-module" title="Permalink to this headline">¶</a></h2>
+<p>To check whether you have the turtle module, open the Python interpreter
+and type</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">turtle</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bob</span> <span class="o">=</span> <span class="n">turtle</span><span class="o">.</span><span class="n">Turtle</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>When you run this code, it should create a new window with small arrow
+that represents the turtle. Close the window.</p>
+<p>Create a file named mypolygon.py and type in the following code:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">turtle</span>
+<span class="n">bob</span> <span class="o">=</span> <span class="n">turtle</span><span class="o">.</span><span class="n">Turtle</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="n">bob</span><span class="p">)</span>
+<span class="n">turtle</span><span class="o">.</span><span class="n">mainloop</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The turtle module (with a lowercase ’t’) provides a function called
+Turtle (with an uppercase ’T’) that creates a Turtle object, which we
+assign to a variable named bob. Printing bob displays something like:</p>
+<div class="highlight-python"><div class="highlight"><pre>&lt;turtle.Turtle object at 0xb7bfbf4c&gt;
+</pre></div>
+</div>
+<p>This means that bob refers to an object with type Turtle as defined in
+module turtle.</p>
+<p><code class="docutils literal"><span class="pre">mainloop</span></code> tells the window to wait for the user to do something,
+although in this case there’s not much for the user to do except close
+the window.</p>
+<p>Once you create a Turtle, you can call a <strong>method</strong> to move it around
+the window. A method is similar to a function, but it uses slightly
+different syntax. For example, to move the turtle forward:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">bob</span><span class="o">.</span><span class="n">fd</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The method, fd, is associated with the turtle object we’re calling bob.
+Calling a method is like making a request: you are asking bob to move
+forward.</p>
+<p>The argument of fd is a distance in pixels, so the actual size depends
+on your display.</p>
+<p>Other methods you can call on a Turtle are bk to move backward, lt for
+left turn, and rt right turn. The argument for lt and rt is an angle in
+degrees.</p>
+<p>Also, each Turtle is holding a pen, which is either down or up; if the
+pen is down, the Turtle leaves a trail when it moves. The methods pu and
+pd stand for “pen up” and “pen down”.</p>
+<p>To draw a right angle, add these lines to the program (after creating
+bob and before calling <code class="docutils literal"><span class="pre">mainloop</span></code>):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">bob</span><span class="o">.</span><span class="n">fd</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">bob</span><span class="o">.</span><span class="n">lt</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
+<span class="n">bob</span><span class="o">.</span><span class="n">fd</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>When you run this program, you should see bob move east and then north,
+leaving two line segments behind.</p>
+<p>Now modify the program to draw a square. Don’t go on until you’ve got it
+working!</p>
+</div>
+<div class="section" id="simple-repetition">
+<h2>Simple repetition<a class="headerlink" href="#simple-repetition" title="Permalink to this headline">¶</a></h2>
+<p>Chances are you wrote something like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">bob</span><span class="o">.</span><span class="n">fd</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">bob</span><span class="o">.</span><span class="n">lt</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
+
+<span class="n">bob</span><span class="o">.</span><span class="n">fd</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">bob</span><span class="o">.</span><span class="n">lt</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
+
+<span class="n">bob</span><span class="o">.</span><span class="n">fd</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">bob</span><span class="o">.</span><span class="n">lt</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
+
+<span class="n">bob</span><span class="o">.</span><span class="n">fd</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We can do the same thing more concisely with a for statement. Add this
+example to mypolygon.py and run it again:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&#39;Hello!&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You should see something like this:</p>
+<div class="highlight-python"><div class="highlight"><pre>Hello!
+Hello!
+Hello!
+Hello!
+</pre></div>
+</div>
+<p>This is the simplest use of the for statement; we will see more later.
+But that should be enough to let you rewrite your square-drawing
+program. Don’t go on until you do.</p>
+<p>Here is a for statement that draws a square:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+    <span class="n">bob</span><span class="o">.</span><span class="n">fd</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+    <span class="n">bob</span><span class="o">.</span><span class="n">lt</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The syntax of a for statement is similar to a function definition. It
+has a header that ends with a colon and an indented body. The body can
+contain any number of statements.</p>
+<p>A for statement is also called a <strong>loop</strong> because the flow of execution
+runs through the body and then loops back to the top. In this case, it
+runs the body four times.</p>
+<p>This version is actually a little different from the previous
+square-drawing code because it makes another turn after drawing the last
+side of the square. The extra turn takes more time, but it simplifies
+the code if we do the same thing every time through the loop. This
+version also has the effect of leaving the turtle back in the starting
+position, facing in the starting direction.</p>
+</div>
+<div class="section" id="exercises">
+<h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
+<p>The following is a series of exercises using TurtleWorld. They are meant
+to be fun, but they have a point, too. While you are working on them,
+think about what the point is.</p>
+<p>The following sections have solutions to the exercises, so don’t look
+until you have finished (or at least tried).</p>
+<ol class="arabic">
+<li><p class="first">Write a function called square that takes a parameter named t, which
+is a turtle. It should use the turtle to draw a square.</p>
+<p>Write a function call that passes bob as an argument to square, and
+then run the program again.</p>
+</li>
+<li><p class="first">Add another parameter, named length, to square. Modify the body so
+length of the sides is length, and then modify the function call to
+provide a second argument. Run the program again. Test your program
+with a range of values for length.</p>
+</li>
+<li><p class="first">Make a copy of square and change the name to polygon. Add another
+parameter named n and modify the body so it draws an n-sided regular
+polygon. Hint: The exterior angles of an n-sided regular polygon are
+<span class="math">360/n</span> degrees.</p>
+</li>
+<li><p class="first">Write a function called circle that takes a turtle, t, and radius, r,
+as parameters and that draws an approximate circle by calling polygon
+with an appropriate length and number of sides. Test your function
+with a range of values of r.</p>
+<p>Hint: figure out the circumference of the circle and make sure that
+length * n = circumference.</p>
+</li>
+<li><p class="first">Make a more general version of circle called arc that takes an
+additional parameter angle, which determines what fraction of a
+circle to draw. angle is in units of degrees, so when angle=360, arc
+should draw a complete circle.</p>
+</li>
+</ol>
+</div>
+<div class="section" id="encapsulation">
+<h2>Encapsulation<a class="headerlink" href="#encapsulation" title="Permalink to this headline">¶</a></h2>
+<p>The first exercise asks you to put your square-drawing code into a
+function definition and then call the function, passing the turtle as a
+parameter. Here is a solution:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">square</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">fd</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">lt</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
+
+<span class="n">square</span><span class="p">(</span><span class="n">bob</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The innermost statements, fd and lt are indented twice to show that they
+are inside the for loop, which is inside the function definition. The
+next line, square(bob), is flush with the left margin, which indicates
+the end of both the for loop and the function definition.</p>
+<p>Inside the function, t refers to the same turtle bob, so t.lt(90) has
+the same effect as bob.lt(90). In that case, why not call the parameter
+bob? The idea is that t can be any turtle, not just bob, so you could
+create a second turtle and pass it as an argument to square:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">alice</span> <span class="o">=</span> <span class="n">Turtle</span><span class="p">()</span>
+<span class="n">square</span><span class="p">(</span><span class="n">alice</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Wrapping a piece of code up in a function is called <strong>encapsulation</strong>.
+One of the benefits of encapsulation is that it attaches a name to the
+code, which serves as a kind of documentation. Another advantage is that
+if you re-use the code, it is more concise to call a function twice than
+to copy and paste the body!</p>
+</div>
+<div class="section" id="generalization">
+<h2>Generalization<a class="headerlink" href="#generalization" title="Permalink to this headline">¶</a></h2>
+<p>The next step is to add a length parameter to square. Here is a
+solution:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">square</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">fd</span><span class="p">(</span><span class="n">length</span><span class="p">)</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">lt</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
+
+<span class="n">square</span><span class="p">(</span><span class="n">bob</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Adding a parameter to a function is called <strong>generalization</strong> because it
+makes the function more general: in the previous version, the square is
+always the same size; in this version it can be any size.</p>
+<p>The next step is also a generalization. Instead of drawing squares,
+polygon draws regular polygons with any number of sides. Here is a
+solution:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">polygon</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+    <span class="n">angle</span> <span class="o">=</span> <span class="mi">360</span> <span class="o">/</span> <span class="n">n</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">fd</span><span class="p">(</span><span class="n">length</span><span class="p">)</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">lt</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
+
+<span class="n">polygon</span><span class="p">(</span><span class="n">bob</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">70</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This example draws a 7-sided polygon with side length 70.</p>
+<p>If you are using Python 2, the value of angle might be off because of
+integer division. A simple solution is to compute angle = 360.0 / n.
+Because the numerator is a floating-point number, the result is floating
+point.</p>
+<p>When a function has more than a few numeric arguments, it is easy to
+forget what they are, or what order they should be in. In that case it
+is often a good idea to include the names of the parameters in the
+argument list:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">polygon</span><span class="p">(</span><span class="n">bob</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">70</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>These are called <strong>keyword arguments</strong> because they include the
+parameter names as “keywords” (not to be confused with Python keywords
+like while and def).</p>
+<p>This syntax makes the program more readable. It is also a reminder about
+how arguments and parameters work: when you call a function, the
+arguments are assigned to the parameters.</p>
+</div>
+<div class="section" id="interface-design">
+<h2>Interface design<a class="headerlink" href="#interface-design" title="Permalink to this headline">¶</a></h2>
+<p>The next step is to write circle, which takes a radius, r, as a
+parameter. Here is a simple solution that uses polygon to draw a
+50-sided polygon:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">math</span>
+
+<span class="k">def</span> <span class="nf">circle</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+    <span class="n">circumference</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">r</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="mi">50</span>
+    <span class="n">length</span> <span class="o">=</span> <span class="n">circumference</span> <span class="o">/</span> <span class="n">n</span>
+    <span class="n">polygon</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The first line computes the circumference of a circle with radius r
+using the formula <span class="math">2 \pi r</span>. Since we use math.pi, we have to
+import math. By convention, import statements are usually at the
+beginning of the script.</p>
+<p>n is the number of line segments in our approximation of a circle, so
+length is the length of each segment. Thus, polygon draws a 50-sides
+polygon that approximates a circle with radius r.</p>
+<p>One limitation of this solution is that n is a constant, which means
+that for very big circles, the line segments are too long, and for small
+circles, we waste time drawing very small segments. One solution would
+be to generalize the function by taking n as a parameter. This would
+give the user (whoever calls circle) more control, but the interface
+would be less clean.</p>
+<p>The <strong>interface</strong> of a function is a summary of how it is used: what are
+the parameters? What does the function do? And what is the return value?
+An interface is “clean” if it allows the caller to do what they want
+without dealing with unnecessary details.</p>
+<p>In this example, r belongs in the interface because it specifies the
+circle to be drawn. n is less appropriate because it pertains to the
+details of <em>how</em> the circle should be rendered.</p>
+<p>Rather than clutter up the interface, it is better to choose an
+appropriate value of n depending on circumference:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">circle</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+    <span class="n">circumference</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">r</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">circumference</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">length</span> <span class="o">=</span> <span class="n">circumference</span> <span class="o">/</span> <span class="n">n</span>
+    <span class="n">polygon</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now the number of segments is an integer near circumference/3, so the
+length of each segment is approximately 3, which is small enough that
+the circles look good, but big enough to be efficient, and acceptable
+for any size circle.</p>
+</div>
+<div class="section" id="refactoring">
+<h2>Refactoring<a class="headerlink" href="#refactoring" title="Permalink to this headline">¶</a></h2>
+<p>When I wrote circle, I was able to re-use polygon because a many-sided
+polygon is a good approximation of a circle. But arc is not as
+cooperative; we can’t use polygon or circle to draw an arc.</p>
+<p>One alternative is to start with a copy of polygon and transform it into
+arc. The result might look like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">arc</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
+    <span class="n">arc_length</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">angle</span> <span class="o">/</span> <span class="mi">360</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">arc_length</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">step_length</span> <span class="o">=</span> <span class="n">arc_length</span> <span class="o">/</span> <span class="n">n</span>
+    <span class="n">step_angle</span> <span class="o">=</span> <span class="n">angle</span> <span class="o">/</span> <span class="n">n</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">fd</span><span class="p">(</span><span class="n">step_length</span><span class="p">)</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">lt</span><span class="p">(</span><span class="n">step_angle</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The second half of this function looks like polygon, but we can’t re-use
+polygon without changing the interface. We could generalize polygon to
+take an angle as a third argument, but then polygon would no longer be
+an appropriate name! Instead, let’s call the more general function
+polyline:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">polyline</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">fd</span><span class="p">(</span><span class="n">length</span><span class="p">)</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">lt</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now we can rewrite polygon and arc to use polyline:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">polygon</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+    <span class="n">angle</span> <span class="o">=</span> <span class="mf">360.0</span> <span class="o">/</span> <span class="n">n</span>
+    <span class="n">polyline</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">angle</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">arc</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
+    <span class="n">arc_length</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">angle</span> <span class="o">/</span> <span class="mi">360</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">arc_length</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">step_length</span> <span class="o">=</span> <span class="n">arc_length</span> <span class="o">/</span> <span class="n">n</span>
+    <span class="n">step_angle</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span> <span class="o">/</span> <span class="n">n</span>
+    <span class="n">polyline</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">step_length</span><span class="p">,</span> <span class="n">step_angle</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Finally, we can rewrite circle to use arc:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">circle</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+    <span class="n">arc</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="mi">360</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This process—rearranging a program to improve interfaces and facilitate
+code re-use—is called <strong>refactoring</strong>. In this case, we noticed that
+there was similar code in arc and polygon, so we “factored it out” into
+polyline.</p>
+<p>If we had planned ahead, we might have written polyline first and
+avoided refactoring, but often you don’t know enough at the beginning of
+a project to design all the interfaces. Once you start coding, you
+understand the problem better. Sometimes refactoring is a sign that you
+have learned something.</p>
+</div>
+<div class="section" id="a-development-plan">
+<h2>A development plan<a class="headerlink" href="#a-development-plan" title="Permalink to this headline">¶</a></h2>
+<p>A <strong>development plan</strong> is a process for writing programs. The process we
+used in this case study is “encapsulation and generalization”. The steps
+of this process are:</p>
+<ol class="arabic simple">
+<li>Start by writing a small program with no function definitions.</li>
+<li>Once you get the program working, identify a coherent piece of it,
+encapsulate the piece in a function and give it a name.</li>
+<li>Generalize the function by adding appropriate parameters.</li>
+<li>Repeat steps 1–3 until you have a set of working functions. Copy and
+paste working code to avoid retyping (and re-debugging).</li>
+<li>Look for opportunities to improve the program by refactoring. For
+example, if you have similar code in several places, consider
+factoring it into an appropriately general function.</li>
+</ol>
+<p>This process has some drawbacks—we will see alternatives later—but it
+can be useful if you don’t know ahead of time how to divide the program
+into functions. This approach lets you design as you go along.</p>
+</div>
+<div class="section" id="docstring">
+<h2>docstring<a class="headerlink" href="#docstring" title="Permalink to this headline">¶</a></h2>
+<p>A <strong>docstring</strong> is a string at the beginning of a function that explains
+the interface (“doc” is short for “documentation”). Here is an example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">polyline</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Draws n line segments with the given length and</span>
+<span class="sd">    angle (in degrees) between them.  t is a turtle.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">fd</span><span class="p">(</span><span class="n">length</span><span class="p">)</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">lt</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>By convention, all docstrings are triple-quoted strings, also known as
+multiline strings because the triple quotes allow the string to span
+more than one line.</p>
+<p>It is terse, but it contains the essential information someone would
+need to use this function. It explains concisely what the function does
+(without getting into the details of how it does it). It explains what
+effect each parameter has on the behavior of the function and what type
+each parameter should be (if it is not obvious).</p>
+<p>Writing this kind of documentation is an important part of interface
+design. A well-designed interface should be simple to explain; if you
+have a hard time explaining one of your functions, maybe the interface
+could be improved.</p>
+</div>
+<div class="section" id="debugging">
+<h2>Debugging<a class="headerlink" href="#debugging" title="Permalink to this headline">¶</a></h2>
+<p>An interface is like a contract between a function and a caller. The
+caller agrees to provide certain parameters and the function agrees to
+do certain work.</p>
+<p>For example, polyline requires four arguments: t has to be a Turtle; n
+has to be an integer; length should be a positive number; and angle has
+to be a number, which is understood to be in degrees.</p>
+<p>These requirements are called <strong>preconditions</strong> because they are
+supposed to be true before the function starts executing. Conversely,
+conditions at the end of the function are <strong>postconditions</strong>.
+Postconditions include the intended effect of the function (like drawing
+line segments) and any side effects (like moving the Turtle or making
+other changes).</p>
+<p>Preconditions are the responsibility of the caller. If the caller
+violates a (properly documented!) precondition and the function doesn’t
+work correctly, the bug is in the caller, not the function.</p>
+<p>If the preconditions are satisfied and the postconditions are not, the
+bug is in the function. If your pre- and postconditions are clear, they
+can help with debugging.</p>
+</div>
+<div class="section" id="glossary">
+<span id="glossary04"></span><h2>Glossary<a class="headerlink" href="#glossary" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>método (<em>method</em>)</dt>
+<dd>A function that is associated with an object and called using dot notation.</dd>
+<dt>laço (<em>loop</em>)</dt>
+<dd>A part of a program that can run repeatedly.</dd>
+<dt>encapsulamento (<em>encapsulation</em>)</dt>
+<dd>The process of transforming a sequence of statements into a function definition.</dd>
+<dt>generalização (<em>generalization</em>)</dt>
+<dd>The process of replacing something unnecessarily specific (like a number) with something appropriately general (like a variable or parameter).</dd>
+<dt>argumento nomeado (<em>keyword argument</em>)</dt>
+<dd>An argument that includes the name of the parameter as a “keyword”.</dd>
+<dt>assinatura (<em>interface</em>)</dt>
+<dd>A description of how to use a function, including the name and descriptions of the arguments and return value.</dd>
+<dt>refatoração (<em>refactoring</em>)</dt>
+<dd>The process of modifying a working program to improve function interfaces and other qualities of the code.</dd>
+<dt>plano de desenvolvimento (<em>development plan</em>)</dt>
+<dd>A process for writing programs.</dd>
+<dt><em>docstring</em></dt>
+<dd>A string that appears at the top of a function definition to document the function’s interface.</dd>
+<dt>pré-condição (<em>precondition</em>)</dt>
+<dd>A requirement that should be satisfied by the caller before a function starts.</dd>
+<dt>pós-condição (<em>postcondition</em>)</dt>
+<dd>A requirement that should be satisfied by the function before it ends.</dd>
+</dl>
+</div>
+<div class="section" id="id1">
+<h2>Exercises<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>Download the code in this chapter from
+<a class="reference external" href="http://thinkpython2.com/code/polygon.py">http://thinkpython2.com/code/polygon.py</a>.</p>
+<ol class="arabic simple">
+<li>Draw a stack diagram that shows the state of the program while
+executing circle(bob, radius). You can do the arithmetic by hand or
+add print statements to the code.</li>
+<li>The version of arc in Section&nbsp;[refactoring] is not very accurate
+because the linear approximation of the circle is always outside the
+true circle. As a result, the Turtle ends up a few pixels away from
+the correct destination. My solution shows a way to reduce the effect
+of this error. Read the code and see if it makes sense to you. If you
+draw a diagram, you might see how it works.</li>
+</ol>
+<div class="figure" id="id2">
+<img alt="Turtle flowers." src="_images/flowers.pdf" />
+<p class="caption"><span class="caption-text">Turtle flowers.</span></p>
+</div>
+<p>Write an appropriately general set of functions that can draw flowers as
+in Figure&nbsp;[fig.flowers].</p>
+<p>Solution: <a class="reference external" href="http://thinkpython2.com/code/flower.py">http://thinkpython2.com/code/flower.py</a>, also requires
+<a class="reference external" href="http://thinkpython2.com/code/polygon.py">http://thinkpython2.com/code/polygon.py</a>.</p>
+<div class="figure" id="id3">
+<img alt="Turtle pies." src="_images/pies.pdf" />
+<p class="caption"><span class="caption-text">Turtle pies.</span></p>
+</div>
+<p>Write an appropriately general set of functions that can draw shapes as
+in Figure&nbsp;[fig.pies].</p>
+<p>Solution: <a class="reference external" href="http://thinkpython2.com/code/pie.py">http://thinkpython2.com/code/pie.py</a>.</p>
+<p>The letters of the alphabet can be constructed from a moderate number of
+basic elements, like vertical and horizontal lines and a few curves.
+Design an alphabet that can be drawn with a minimal number of basic
+elements and then write functions that draw the letters.</p>
+<p>You should write one function for each letter, with names <code class="docutils literal"><span class="pre">draw_a</span></code>,
+<code class="docutils literal"><span class="pre">draw_b</span></code>, etc., and put your functions in a file named letters.py. You
+can download a “turtle typewriter” from
+<a class="reference external" href="http://thinkpython2.com/code/typewriter.py">http://thinkpython2.com/code/typewriter.py</a> to help you test your code.</p>
+<p>You can get a solution from <a class="reference external" href="http://thinkpython2.com/code/letters.py">http://thinkpython2.com/code/letters.py</a>; it
+also requires <a class="reference external" href="http://thinkpython2.com/code/polygon.py">http://thinkpython2.com/code/polygon.py</a>.</p>
+<p>Read about spirals at <a class="reference external" href="http://en.wikipedia.org/wiki/Spiral">http://en.wikipedia.org/wiki/Spiral</a>; then write a
+program that draws an Archimedian spiral (or one of the other kinds).
+Solution: <a class="reference external" href="http://thinkpython2.com/code/spiral.py">http://thinkpython2.com/code/spiral.py</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Case study: interface design</a><ul>
+<li><a class="reference internal" href="#the-turtle-module">The turtle module</a></li>
+<li><a class="reference internal" href="#simple-repetition">Simple repetition</a></li>
+<li><a class="reference internal" href="#exercises">Exercises</a></li>
+<li><a class="reference internal" href="#encapsulation">Encapsulation</a></li>
+<li><a class="reference internal" href="#generalization">Generalization</a></li>
+<li><a class="reference internal" href="#interface-design">Interface design</a></li>
+<li><a class="reference internal" href="#refactoring">Refactoring</a></li>
+<li><a class="reference internal" href="#a-development-plan">A development plan</a></li>
+<li><a class="reference internal" href="#docstring">docstring</a></li>
+<li><a class="reference internal" href="#debugging">Debugging</a></li>
+<li><a class="reference internal" href="#glossary">Glossary</a></li>
+<li><a class="reference internal" href="#id1">Exercises</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="03-function.html" title="previous chapter">Functions</a></li>
+      <li>Next: <a href="05-cond-recur.html" title="next chapter">Conditionals and recursion</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/04-case-ui.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Allen B. Downey.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
+      |
+      <a href="_sources/04-case-ui.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

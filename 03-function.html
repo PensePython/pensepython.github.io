@@ -1,0 +1,719 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Functions &mdash; Pense Python 2e documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2e',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Pense Python 2e documentation" href="index.html" />
+    <link rel="next" title="Case study: interface design" href="04-case-ui.html" />
+    <link rel="prev" title="Variables, expressions and statements" href="02-statement.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="functions">
+<h1>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h1>
+<p>In the context of programming, a <strong>function</strong> is a named sequence of
+statements that performs a computation. When you define a function, you
+specify the name and the sequence of statements. Later, you can “call”
+the function by name.</p>
+<div class="section" id="function-calls">
+<h2>Function calls<a class="headerlink" href="#function-calls" title="Permalink to this headline">¶</a></h2>
+<p>We have already seen one example of a <strong>function call</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="go">&lt;class &#39;int&#39;&gt;</span>
+</pre></div>
+</div>
+<p>The name of the function is type. The expression in parentheses is
+called the <strong>argument</strong> of the function. The result, for this function,
+is the type of the argument.</p>
+<p>It is common to say that a function “takes” an argument and “returns” a
+result. The result is also called the <strong>return value</strong>.</p>
+<p>Python provides functions that convert values from one type to another.
+The int function takes any value and converts it to an integer, if it
+can, or complains otherwise:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">int</span><span class="p">(</span><span class="s">&#39;32&#39;</span><span class="p">)</span>
+<span class="go">32</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">int</span><span class="p">(</span><span class="s">&#39;Hello&#39;</span><span class="p">)</span>
+<span class="go">ValueError: invalid literal for int(): Hello</span>
+</pre></div>
+</div>
+<p>int can convert floating-point values to integers, but it doesn’t round
+off; it chops off the fraction part:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">int</span><span class="p">(</span><span class="mf">3.99999</span><span class="p">)</span>
+<span class="go">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mf">2.3</span><span class="p">)</span>
+<span class="go">-2</span>
+</pre></div>
+</div>
+<p>float converts integers and strings to floating-point numbers:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">float</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
+<span class="go">32.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">float</span><span class="p">(</span><span class="s">&#39;3.14159&#39;</span><span class="p">)</span>
+<span class="go">3.14159</span>
+</pre></div>
+</div>
+<p>Finally, str converts its argument to a string:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
+<span class="go">&#39;32&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="mf">3.14159</span><span class="p">)</span>
+<span class="go">&#39;3.14159&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="math-functions">
+<h2>Math functions<a class="headerlink" href="#math-functions" title="Permalink to this headline">¶</a></h2>
+<p>Python has a math module that provides most of the familiar mathematical
+functions. A <strong>module</strong> is a file that contains a collection of related
+functions.</p>
+<p>Before we can use the functions in a module, we have to import it with
+an <strong>import statement</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">math</span>
+</pre></div>
+</div>
+<p>This statement creates a <strong>module object</strong> named math. If you display
+the module object, you get some information about it:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">math</span>
+<span class="go">&lt;module &#39;math&#39; (built-in)&gt;</span>
+</pre></div>
+</div>
+<p>The module object contains the functions and variables defined in the
+module. To access one of the functions, you have to specify the name of
+the module and the name of the function, separated by a dot (also known
+as a period). This format is called <strong>dot notation</strong>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">ratio</span> <span class="o">=</span> <span class="n">signal_power</span> <span class="o">/</span> <span class="n">noise_power</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">decibels</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">ratio</span><span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">radians</span> <span class="o">=</span> <span class="mf">0.7</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">height</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">radians</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The first example uses <code class="docutils literal"><span class="pre">math.log10</span></code> to compute a signal-to-noise ratio
+in decibels (assuming that <code class="docutils literal"><span class="pre">signal_power</span></code> and <code class="docutils literal"><span class="pre">noise_power</span></code> are
+defined). The math module also provides log, which computes logarithms
+base e.</p>
+<p>The second example finds the sine of radians. The name of the variable
+is a hint that sin and the other trigonometric functions (cos, tan,
+etc.) take arguments in radians. To convert from degrees to radians,
+divide by 180 and multiply by <span class="math">\pi</span>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">degrees</span> <span class="o">=</span> <span class="mi">45</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">radians</span> <span class="o">=</span> <span class="n">degrees</span> <span class="o">/</span> <span class="mf">180.0</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">radians</span><span class="p">)</span>
+<span class="go">0.707106781187</span>
+</pre></div>
+</div>
+<p>The expression math.pi gets the variable pi from the math module. Its
+value is a floating-point approximation of <span class="math">\pi</span>, accurate to
+about 15 digits.</p>
+<p>If you know trigonometry, you can check the previous result by comparing
+it to the square root of two divided by two:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
+<span class="go">0.707106781187</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="composition">
+<h2>Composition<a class="headerlink" href="#composition" title="Permalink to this headline">¶</a></h2>
+<p>So far, we have looked at the elements of a program—variables,
+expressions, and statements—in isolation, without talking about how to
+combine them.</p>
+<p>One of the most useful features of programming languages is their
+ability to take small building blocks and <strong>compose</strong> them. For example,
+the argument of a function can be any kind of expression, including
+arithmetic operators:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">x</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">degrees</span> <span class="o">/</span> <span class="mf">360.0</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>And even function calls:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">x</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Almost anywhere you can put a value, you can put an arbitrary
+expression, with one exception: the left side of an assignment statement
+has to be a variable name. Any other expression on the left side is a
+syntax error (we will see exceptions to this rule later).</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">minutes</span> <span class="o">=</span> <span class="n">hours</span> <span class="o">*</span> <span class="mi">60</span>                 <span class="c"># right</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hours</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">=</span> <span class="n">minutes</span>                 <span class="c"># wrong!</span>
+<span class="go">SyntaxError: can&#39;t assign to operator</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="adding-new-functions">
+<h2>Adding new functions<a class="headerlink" href="#adding-new-functions" title="Permalink to this headline">¶</a></h2>
+<p>So far, we have only been using the functions that come with Python, but
+it is also possible to add new functions. A <strong>function definition</strong>
+specifies the name of a new function and the sequence of statements that
+run when the function is called.</p>
+<p>Here is an example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">print_lyrics</span><span class="p">():</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;I&#39;m a lumberjack, and I&#39;m okay.&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;I sleep all night and I work all day.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>def is a keyword that indicates that this is a function definition. The
+name of the function is <code class="docutils literal"><span class="pre">print_lyrics</span></code>. The rules for function names
+are the same as for variable names: letters, numbers and underscore are
+legal, but the first character can’t be a number. You can’t use a
+keyword as the name of a function, and you should avoid having a
+variable and a function with the same name.</p>
+<p>The empty parentheses after the name indicate that this function doesn’t
+take any arguments.</p>
+<p>The first line of the function definition is called the <strong>header</strong>; the
+rest is called the <strong>body</strong>. The header has to end with a colon and the
+body has to be indented. By convention, indentation is always four
+spaces. The body can contain any number of statements.</p>
+<p>The strings in the print statements are enclosed in double quotes.
+Single quotes and double quotes do the same thing; most people use
+single quotes except in cases like this where a single quote (which is
+also an apostrophe) appears in the string.</p>
+<p>All quotation marks (single and double) must be “straight quotes”,
+usually located next to Enter on the keyboard. “Curly quotes”, like the
+ones in this sentence, are not legal in Python.</p>
+<p>If you type a function definition in interactive mode, the interpreter
+prints dots (...) to let you know that the definition isn’t complete:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">print_lyrics</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="s">&quot;I&#39;m a lumberjack, and I&#39;m okay.&quot;</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="s">&quot;I sleep all night and I work all day.&quot;</span><span class="p">)</span>
+<span class="gp">...</span>
+</pre></div>
+</div>
+<p>To end the function, you have to enter an empty line.</p>
+<p>Defining a function creates a <strong>function object</strong>, which has type
+<code class="docutils literal"><span class="pre">function</span></code>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">print_lyrics</span><span class="p">)</span>
+<span class="go">&lt;function print_lyrics at 0xb7e99e9c&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">print_lyrics</span><span class="p">)</span>
+<span class="go">&lt;class &#39;function&#39;&gt;</span>
+</pre></div>
+</div>
+<p>The syntax for calling the new function is the same as for built-in
+functions:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">print_lyrics</span><span class="p">()</span>
+<span class="go">I&#39;m a lumberjack, and I&#39;m okay.</span>
+<span class="go">I sleep all night and I work all day.</span>
+</pre></div>
+</div>
+<p>Once you have defined a function, you can use it inside another
+function. For example, to repeat the previous refrain, we could write a
+function called <code class="docutils literal"><span class="pre">repeat_lyrics</span></code>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">repeat_lyrics</span><span class="p">():</span>
+    <span class="n">print_lyrics</span><span class="p">()</span>
+    <span class="n">print_lyrics</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>And then call <code class="docutils literal"><span class="pre">repeat_lyrics</span></code>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">repeat_lyrics</span><span class="p">()</span>
+<span class="go">I&#39;m a lumberjack, and I&#39;m okay.</span>
+<span class="go">I sleep all night and I work all day.</span>
+<span class="go">I&#39;m a lumberjack, and I&#39;m okay.</span>
+<span class="go">I sleep all night and I work all day.</span>
+</pre></div>
+</div>
+<p>But that’s not really how the song goes.</p>
+</div>
+<div class="section" id="definitions-and-uses">
+<h2>Definitions and uses<a class="headerlink" href="#definitions-and-uses" title="Permalink to this headline">¶</a></h2>
+<p>Pulling together the code fragments from the previous section, the whole
+program looks like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">print_lyrics</span><span class="p">():</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;I&#39;m a lumberjack, and I&#39;m okay.&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;I sleep all night and I work all day.&quot;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">repeat_lyrics</span><span class="p">():</span>
+    <span class="n">print_lyrics</span><span class="p">()</span>
+    <span class="n">print_lyrics</span><span class="p">()</span>
+
+<span class="n">repeat_lyrics</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This program contains two function definitions: <code class="docutils literal"><span class="pre">print_lyrics</span></code> and
+<code class="docutils literal"><span class="pre">repeat_lyrics</span></code>. Function definitions get executed just like other
+statements, but the effect is to create function objects. The statements
+inside the function do not run until the function is called, and the
+function definition generates no output.</p>
+<p>As you might expect, you have to create a function before you can run
+it. In other words, the function definition has to run before the
+function gets called.</p>
+<p>As an exercise, move the last line of this program to the top, so the
+function call appears before the definitions. Run the program and see
+what error message you get.</p>
+<p>Now move the function call back to the bottom and move the definition of
+<code class="docutils literal"><span class="pre">print_lyrics</span></code> after the definition of <code class="docutils literal"><span class="pre">repeat_lyrics</span></code>. What happens
+when you run this program?</p>
+</div>
+<div class="section" id="flow-of-execution">
+<h2>Flow of execution<a class="headerlink" href="#flow-of-execution" title="Permalink to this headline">¶</a></h2>
+<p>To ensure that a function is defined before its first use, you have to
+know the order statements run in, which is called the <strong>flow of
+execution</strong>.</p>
+<p>Execution always begins at the first statement of the program.
+Statements are run one at a time, in order from top to bottom.</p>
+<p>Function definitions do not alter the flow of execution of the program,
+but remember that statements inside the function don’t run until the
+function is called.</p>
+<p>A function call is like a detour in the flow of execution. Instead of
+going to the next statement, the flow jumps to the body of the function,
+runs the statements there, and then comes back to pick up where it left
+off.</p>
+<p>That sounds simple enough, until you remember that one function can call
+another. While in the middle of one function, the program might have to
+run the statements in another function. Then, while running that new
+function, the program might have to run yet another function!</p>
+<p>Fortunately, Python is good at keeping track of where it is, so each
+time a function completes, the program picks up where it left off in the
+function that called it. When it gets to the end of the program, it
+terminates.</p>
+<p>In summary, when you read a program, you don’t always want to read from
+top to bottom. Sometimes it makes more sense if you follow the flow of
+execution.</p>
+</div>
+<div class="section" id="parameters-and-arguments">
+<h2>Parameters and arguments<a class="headerlink" href="#parameters-and-arguments" title="Permalink to this headline">¶</a></h2>
+<p>Some of the functions we have seen require arguments. For example, when
+you call math.sin you pass a number as an argument. Some functions take
+more than one argument: math.pow takes two, the base and the exponent.</p>
+<p>Inside the function, the arguments are assigned to variables called
+<strong>parameters</strong>. Here is a definition for a function that takes an
+argument:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">print_twice</span><span class="p">(</span><span class="n">bruce</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">bruce</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">bruce</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This function assigns the argument to a parameter named bruce. When the
+function is called, it prints the value of the parameter (whatever it
+is) twice.</p>
+<p>This function works with any value that can be printed.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">print_twice</span><span class="p">(</span><span class="s">&#39;Spam&#39;</span><span class="p">)</span>
+<span class="go">Spam</span>
+<span class="go">Spam</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_twice</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="go">42</span>
+<span class="go">42</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_twice</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+<span class="go">3.14159265359</span>
+<span class="go">3.14159265359</span>
+</pre></div>
+</div>
+<p>The same rules of composition that apply to built-in functions also
+apply to programmer-defined functions, so we can use any kind of
+expression as an argument for <code class="docutils literal"><span class="pre">print_twice</span></code>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">print_twice</span><span class="p">(</span><span class="s">&#39;Spam &#39;</span><span class="o">*</span><span class="mi">4</span><span class="p">)</span>
+<span class="go">Spam Spam Spam Spam</span>
+<span class="go">Spam Spam Spam Spam</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_twice</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span>
+<span class="go">-1.0</span>
+<span class="go">-1.0</span>
+</pre></div>
+</div>
+<p>The argument is evaluated before the function is called, so in the
+examples the expressions <code class="docutils literal"><span class="pre">'Spam</span> <span class="pre">'*4</span></code> and math.cos(math.pi) are only
+evaluated once.</p>
+<p>You can also use a variable as an argument:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">michael</span> <span class="o">=</span> <span class="s">&#39;Eric, the half a bee.&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_twice</span><span class="p">(</span><span class="n">michael</span><span class="p">)</span>
+<span class="go">Eric, the half a bee.</span>
+<span class="go">Eric, the half a bee.</span>
+</pre></div>
+</div>
+<p>The name of the variable we pass as an argument (michael) has nothing to
+do with the name of the parameter (bruce). It doesn’t matter what the
+value was called back home (in the caller); here in <code class="docutils literal"><span class="pre">print_twice</span></code>, we
+call everybody bruce.</p>
+</div>
+<div class="section" id="variables-and-parameters-are-local">
+<h2>Variables and parameters are local<a class="headerlink" href="#variables-and-parameters-are-local" title="Permalink to this headline">¶</a></h2>
+<p>When you create a variable inside a function, it is <strong>local</strong>, which
+means that it only exists inside the function. For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">cat_twice</span><span class="p">(</span><span class="n">part1</span><span class="p">,</span> <span class="n">part2</span><span class="p">):</span>
+    <span class="n">cat</span> <span class="o">=</span> <span class="n">part1</span> <span class="o">+</span> <span class="n">part2</span>
+    <span class="n">print_twice</span><span class="p">(</span><span class="n">cat</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This function takes two arguments, concatenates them, and prints the
+result twice. Here is an example that uses it:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">line1</span> <span class="o">=</span> <span class="s">&#39;Bing tiddle &#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">line2</span> <span class="o">=</span> <span class="s">&#39;tiddle bang.&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cat_twice</span><span class="p">(</span><span class="n">line1</span><span class="p">,</span> <span class="n">line2</span><span class="p">)</span>
+<span class="go">Bing tiddle tiddle bang.</span>
+<span class="go">Bing tiddle tiddle bang.</span>
+</pre></div>
+</div>
+<p>When <code class="docutils literal"><span class="pre">cat_twice</span></code> terminates, the variable cat is destroyed. If we try
+to print it, we get an exception:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">cat</span><span class="p">)</span>
+<span class="go">NameError: name &#39;cat&#39; is not defined</span>
+</pre></div>
+</div>
+<p>Parameters are also local. For example, outside <code class="docutils literal"><span class="pre">print_twice</span></code>, there
+is no such thing as bruce.</p>
+</div>
+<div class="section" id="stack-diagrams">
+<h2>Stack diagrams<a class="headerlink" href="#stack-diagrams" title="Permalink to this headline">¶</a></h2>
+<p>To keep track of which variables can be used where, it is sometimes
+useful to draw a <strong>stack diagram</strong>. Like state diagrams, stack diagrams
+show the value of each variable, but they also show the function each
+variable belongs to.</p>
+<p>Each function is represented by a <strong>frame</strong>. A frame is a box with the
+name of a function beside it and the parameters and variables of the
+function inside it. The stack diagram for the previous example is shown
+in Figure&nbsp;[fig.stack].</p>
+<div class="figure" id="id1">
+<img alt="Stack diagram." src="_images/stack.pdf" />
+<p class="caption"><span class="caption-text">Stack diagram.</span></p>
+</div>
+<p>The frames are arranged in a stack that indicates which function called
+which, and so on. In this example, <code class="docutils literal"><span class="pre">print_twice</span></code> was called by
+<code class="docutils literal"><span class="pre">cat_twice</span></code>, and <code class="docutils literal"><span class="pre">cat_twice</span></code> was called by <code class="docutils literal"><span class="pre">__main__</span></code>, which is a
+special name for the topmost frame. When you create a variable outside
+of any function, it belongs to <code class="docutils literal"><span class="pre">__main__</span></code>.</p>
+<p>Each parameter refers to the same value as its corresponding argument.
+So, part1 has the same value as line1, part2 has the same value as
+line2, and bruce has the same value as cat.</p>
+<p>If an error occurs during a function call, Python prints the name of the
+function, the name of the function that called it, and the name of the
+function that called <em>that</em>, all the way back to <code class="docutils literal"><span class="pre">__main__</span></code>.</p>
+<p>For example, if you try to access cat from within <code class="docutils literal"><span class="pre">print_twice</span></code>, you
+get a NameError:</p>
+<div class="highlight-python"><div class="highlight"><pre>Traceback (innermost last):
+  File &quot;test.py&quot;, line 13, in __main__
+    cat_twice(line1, line2)
+  File &quot;test.py&quot;, line 5, in cat_twice
+    print_twice(cat)
+  File &quot;test.py&quot;, line 9, in print_twice
+    print(cat)
+NameError: name &#39;cat&#39; is not defined
+</pre></div>
+</div>
+<p>This list of functions is called a <strong>traceback</strong>. It tells you what
+program file the error occurred in, and what line, and what functions
+were executing at the time. It also shows the line of code that caused
+the error.</p>
+<p>The order of the functions in the traceback is the same as the order of
+the frames in the stack diagram. The function that is currently running
+is at the bottom.</p>
+</div>
+<div class="section" id="fruitful-functions-and-void-functions">
+<h2>Fruitful functions and void functions<a class="headerlink" href="#fruitful-functions-and-void-functions" title="Permalink to this headline">¶</a></h2>
+<p>Some of the functions we have used, such as the math functions, return
+results; for lack of a better name, I call them <strong>fruitful functions</strong>.
+Other functions, like <code class="docutils literal"><span class="pre">print_twice</span></code>, perform an action but don’t
+return a value. They are called <strong>void functions</strong>.</p>
+<p>When you call a fruitful function, you almost always want to do
+something with the result; for example, you might assign it to a
+variable or use it as part of an expression:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">x</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">radians</span><span class="p">)</span>
+<span class="n">golden</span> <span class="o">=</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+</pre></div>
+</div>
+<p>When you call a function in interactive mode, Python displays the
+result:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="go">2.2360679774997898</span>
+</pre></div>
+</div>
+<p>But in a script, if you call a fruitful function all by itself, the
+return value is lost forever!</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This script computes the square root of 5, but since it doesn’t store or
+display the result, it is not very useful.</p>
+<p>Void functions might display something on the screen or have some other
+effect, but they don’t have a return value. If you assign the result to
+a variable, you get a special value called None.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">print_twice</span><span class="p">(</span><span class="s">&#39;Bing&#39;</span><span class="p">)</span>
+<span class="go">Bing</span>
+<span class="go">Bing</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="go">None</span>
+</pre></div>
+</div>
+<p>The value None is not the same as the string <code class="docutils literal"><span class="pre">'None'</span></code>. It is a special
+value that has its own type:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">None</span><span class="p">))</span>
+<span class="go">&lt;class &#39;NoneType&#39;&gt;</span>
+</pre></div>
+</div>
+<p>The functions we have written so far are all void. We will start writing
+fruitful functions in a few chapters.</p>
+</div>
+<div class="section" id="why-functions">
+<h2>Why functions?<a class="headerlink" href="#why-functions" title="Permalink to this headline">¶</a></h2>
+<p>It may not be clear why it is worth the trouble to divide a program into
+functions. There are several reasons:</p>
+<ul class="simple">
+<li>Creating a new function gives you an opportunity to name a group of
+statements, which makes your program easier to read and debug.</li>
+<li>Functions can make a program smaller by eliminating repetitive code.
+Later, if you make a change, you only have to make it in one place.</li>
+<li>Dividing a long program into functions allows you to debug the parts
+one at a time and then assemble them into a working whole.</li>
+<li>Well-designed functions are often useful for many programs. Once you
+write and debug one, you can reuse it.</li>
+</ul>
+</div>
+<div class="section" id="debugging">
+<h2>Debugging<a class="headerlink" href="#debugging" title="Permalink to this headline">¶</a></h2>
+<p>One of the most important skills you will acquire is debugging. Although
+it can be frustrating, debugging is one of the most intellectually rich,
+challenging, and interesting parts of programming.</p>
+<p>In some ways debugging is like detective work. You are confronted with
+clues and you have to infer the processes and events that led to the
+results you see.</p>
+<p>Debugging is also like an experimental science. Once you have an idea
+about what is going wrong, you modify your program and try again. If
+your hypothesis was correct, you can predict the result of the
+modification, and you take a step closer to a working program. If your
+hypothesis was wrong, you have to come up with a new one. As Sherlock
+Holmes pointed out, “When you have eliminated the impossible, whatever
+remains, however improbable, must be the truth.” (A. Conan Doyle, <em>The
+Sign of Four</em>)</p>
+<p>For some people, programming and debugging are the same thing. That is,
+programming is the process of gradually debugging a program until it
+does what you want. The idea is that you should start with a working
+program and make small modifications, debugging them as you go.</p>
+<p>For example, Linux is an operating system that contains millions of
+lines of code, but it started out as a simple program Linus Torvalds
+used to explore the Intel 80386 chip. According to Larry Greenfield,
+“One of Linus’s earlier projects was a program that would switch between
+printing AAAA and BBBB. This later evolved to Linux.” (<em>The Linux Users’
+Guide</em> Beta Version 1).</p>
+</div>
+<div class="section" id="glossary">
+<span id="glossary03"></span><h2>Glossary<a class="headerlink" href="#glossary" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>função (<em>function</em>)</dt>
+<dd>A named sequence of statements that performs some useful operation. Functions may or may not take arguments and may or may not produce a result.</dd>
+<dt>definição de função (<em>function definition</em>)</dt>
+<dd>A statement that creates a new function, specifying its name, parameters, and the statements it contains.</dd>
+<dt>objeto-função (<em>function object</em>)</dt>
+<dd>A value created by a function definition. The name of the function is a variable that refers to a function object.</dd>
+<dt>cabeçalho (<em>header</em>)</dt>
+<dd>The first line of a function definition.</dd>
+<dt>corpo (<em>body</em>)</dt>
+<dd>The sequence of statements inside a function definition.</dd>
+<dt>parâmetro (<em>parameter</em>)</dt>
+<dd>A name used inside a function to refer to the value passed as an argument.</dd>
+<dt>chamada de função (<em>function call</em>)</dt>
+<dd>A statement that runs a function. It consists of the function name followed by an argument list in parentheses.</dd>
+<dt>argumento (<em>argument</em>)</dt>
+<dd>A value provided to a function when the function is called. This value is assigned to the corresponding parameter in the function.</dd>
+<dt>variável local (<em>local variable</em>)</dt>
+<dd>A variable defined inside a function. A local variable can only be used inside its function.</dd>
+<dt>valor devolvido (<em>return value</em>)</dt>
+<dd>The result of a function. If a function call is used as an expression, the return value is the value of the expression.</dd>
+<dt>função produtiva (<em>fruitful function</em>)</dt>
+<dd>A function that returns a value.</dd>
+<dt>procedimento (<em>void function</em>)</dt>
+<dd>A function that always returns None.</dd>
+<dt><code class="docutils literal"><span class="pre">None</span></code></dt>
+<dd>A special value returned by void functions.</dd>
+<dt>módulo (<em>module</em>)</dt>
+<dd>A file that contains a collection of related functions and other definitions.</dd>
+<dt><code class="docutils literal"><span class="pre">import</span></code>, instrução (<code class="docutils literal"><span class="pre">import</span></code> <em>statement</em>)</dt>
+<dd>A statement that reads a module file and creates a module object.</dd>
+<dt>objeto-módulo (<em>module object</em>)</dt>
+<dd>A value created by an import statement that provides access to the values defined in a module.</dd>
+<dt>notação de ponto (<em>dot notation</em>)</dt>
+<dd>The syntax for calling a function in another module by specifying the module name followed by a dot (period) and the function name.</dd>
+<dt>composição (<em>composition</em>)</dt>
+<dd>Using an expression as part of a larger expression, or a statement as part of a larger statement.</dd>
+<dt>fluxo de execução (<em>flow of execution</em>)</dt>
+<dd>The order statements run in.</dd>
+<dt>diagrama de pilha (<em>stack diagram</em>)</dt>
+<dd>A graphical representation of a stack of functions, their variables, and the values they refer to.</dd>
+<dt><em>frame</em> ()</dt>
+<dd>A box in a stack diagram that represents a function call. It contains the local variables and parameters of the function.</dd>
+<dt><em>traceback</em> ()</dt>
+<dd>A list of the functions that are executing, printed when an exception occurs.</dd>
+</dl>
+</div>
+<div class="section" id="exercises">
+<h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
+<p>Write a function named <code class="docutils literal"><span class="pre">right_justify</span></code> that takes a string named s as
+a parameter and prints the string with enough leading spaces so that the
+last letter of the string is in column 70 of the display.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">right_justify</span><span class="p">(</span><span class="s">&#39;monty&#39;</span><span class="p">)</span>
+<span class="go">                                                                 monty</span>
+</pre></div>
+</div>
+<p>Hint: Use string concatenation and repetition. Also, Python provides a
+built-in function called len that returns the length of a string, so the
+value of <code class="docutils literal"><span class="pre">len('monty')</span></code> is 5.</p>
+<p>A function object is a value you can assign to a variable or pass as an
+argument. For example, <code class="docutils literal"><span class="pre">do_twice</span></code> is a function that takes a function
+object as an argument and calls it twice:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">do_twice</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="n">f</span><span class="p">()</span>
+    <span class="n">f</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Here’s an example that uses <code class="docutils literal"><span class="pre">do_twice</span></code> to call a function named
+<code class="docutils literal"><span class="pre">print_spam</span></code> twice.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">print_spam</span><span class="p">():</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&#39;spam&#39;</span><span class="p">)</span>
+
+<span class="n">do_twice</span><span class="p">(</span><span class="n">print_spam</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple">
+<li>Type this example into a script and test it.</li>
+<li>Modify <code class="docutils literal"><span class="pre">do_twice</span></code> so that it takes two arguments, a function object
+and a value, and calls the function twice, passing the value as an
+argument.</li>
+<li>Copy the definition of <code class="docutils literal"><span class="pre">print_twice</span></code> from earlier in this chapter
+to your script.</li>
+<li>Use the modified version of <code class="docutils literal"><span class="pre">do_twice</span></code> to call <code class="docutils literal"><span class="pre">print_twice</span></code>
+twice, passing <code class="docutils literal"><span class="pre">'spam'</span></code> as an argument.</li>
+<li>Define a new function called <code class="docutils literal"><span class="pre">do_four</span></code> that takes a function object
+and a value and calls the function four times, passing the value as a
+parameter. There should be only two statements in the body of this
+function, not four.</li>
+</ol>
+<p>Solution: <a class="reference external" href="http://thinkpython2.com/code/do_four.py">http://thinkpython2.com/code/do_four.py</a>.</p>
+<p>Note: This exercise should be done using only the statements and other
+features we have learned so far.</p>
+<ol class="arabic">
+<li><p class="first">Write a function that draws a grid like the following:</p>
+<div class="highlight-python"><div class="highlight"><pre>+ - - - - + - - - - +
+|         |         |
+|         |         |
+|         |         |
+|         |         |
++ - - - - + - - - - +
+|         |         |
+|         |         |
+|         |         |
+|         |         |
++ - - - - + - - - - +
+</pre></div>
+</div>
+<p>Hint: to print more than one value on a line, you can print a
+comma-separated sequence of values:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">print</span><span class="p">(</span><span class="s">&#39;+&#39;</span><span class="p">,</span> <span class="s">&#39;-&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>By default, print advances to the next line, but you can override
+that behavior and put a space at the end, like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">print</span><span class="p">(</span><span class="s">&#39;+&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s">&#39; &#39;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&#39;-&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The output of these statements is <code class="docutils literal"><span class="pre">'+</span> <span class="pre">-'</span></code>.</p>
+<p>A print statement with no argument ends the current line and goes to
+the next line.</p>
+</li>
+<li><p class="first">Write a function that draws a similar grid with four rows and four
+columns.</p>
+</li>
+</ol>
+<p>Solution: <a class="reference external" href="http://thinkpython2.com/code/grid.py">http://thinkpython2.com/code/grid.py</a>. Credit: This exercise is
+based on an exercise in Oualline, <em>Practical C Programming, Third
+Edition</em>, O’Reilly Media, 1997.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Functions</a><ul>
+<li><a class="reference internal" href="#function-calls">Function calls</a></li>
+<li><a class="reference internal" href="#math-functions">Math functions</a></li>
+<li><a class="reference internal" href="#composition">Composition</a></li>
+<li><a class="reference internal" href="#adding-new-functions">Adding new functions</a></li>
+<li><a class="reference internal" href="#definitions-and-uses">Definitions and uses</a></li>
+<li><a class="reference internal" href="#flow-of-execution">Flow of execution</a></li>
+<li><a class="reference internal" href="#parameters-and-arguments">Parameters and arguments</a></li>
+<li><a class="reference internal" href="#variables-and-parameters-are-local">Variables and parameters are local</a></li>
+<li><a class="reference internal" href="#stack-diagrams">Stack diagrams</a></li>
+<li><a class="reference internal" href="#fruitful-functions-and-void-functions">Fruitful functions and void functions</a></li>
+<li><a class="reference internal" href="#why-functions">Why functions?</a></li>
+<li><a class="reference internal" href="#debugging">Debugging</a></li>
+<li><a class="reference internal" href="#glossary">Glossary</a></li>
+<li><a class="reference internal" href="#exercises">Exercises</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="02-statement.html" title="previous chapter">Variables, expressions and statements</a></li>
+      <li>Next: <a href="04-case-ui.html" title="next chapter">Case study: interface design</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/03-function.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Allen B. Downey.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
+      |
+      <a href="_sources/03-function.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

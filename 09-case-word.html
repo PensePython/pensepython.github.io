@@ -1,0 +1,438 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Case study: word play &mdash; Pense Python 2e documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2e',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Pense Python 2e documentation" href="index.html" />
+    <link rel="next" title="Lists" href="10-list.html" />
+    <link rel="prev" title="Strings" href="08-string.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="case-study-word-play">
+<h1>Case study: word play<a class="headerlink" href="#case-study-word-play" title="Permalink to this headline">¶</a></h1>
+<p>This chapter presents the second case study, which involves solving word
+puzzles by searching for words that have certain properties. For
+example, we’ll find the longest palindromes in English and search for
+words whose letters appear in alphabetical order. And I will present
+another program development plan: reduction to a previously solved
+problem.</p>
+<div class="section" id="reading-word-lists">
+<h2>Reading word lists<a class="headerlink" href="#reading-word-lists" title="Permalink to this headline">¶</a></h2>
+<p>For the exercises in this chapter we need a list of English words. There
+are lots of word lists available on the Web, but the one most suitable
+for our purpose is one of the word lists collected and contributed to
+the public domain by Grady Ward as part of the Moby lexicon project (see
+<a class="reference external" href="http://wikipedia.org/wiki/Moby_Project">http://wikipedia.org/wiki/Moby_Project</a>). It is a list of 113,809
+official crosswords; that is, words that are considered valid in
+crossword puzzles and other word games. In the Moby collection, the
+filename is 113809of.fic; you can download a copy, with the simpler name
+words.txt, from <a class="reference external" href="http://thinkpython2.com/code/words.txt">http://thinkpython2.com/code/words.txt</a>.</p>
+<p>This file is in plain text, so you can open it with a text editor, but
+you can also read it from Python. The built-in function open takes the
+name of the file as a parameter and returns a <strong>file object</strong> you can
+use to read the file.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">fin</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;words.txt&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>fin is a common name for a file object used for input. The file object
+provides several methods for reading, including readline, which reads
+characters from the file until it gets to a newline and returns the
+result as a string:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">fin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+<span class="go">&#39;aa\r\n&#39;</span>
+</pre></div>
+</div>
+<p>The first word in this particular list is “aa”, which is a kind of lava.
+The sequence <code class="docutils literal"><span class="pre">\r\n</span></code> represents two whitespace characters, a carriage
+return and a newline, that separate this word from the next.</p>
+<p>The file object keeps track of where it is in the file, so if you call
+readline again, you get the next word:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">fin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+<span class="go">&#39;aah\r\n&#39;</span>
+</pre></div>
+</div>
+<p>The next word is “aah”, which is a perfectly legitimate word, so stop
+looking at me like that. Or, if it’s the whitespace that’s bothering
+you, we can get rid of it with the string method strip:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">line</span> <span class="o">=</span> <span class="n">fin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">word</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">word</span>
+<span class="go">&#39;aahed&#39;</span>
+</pre></div>
+</div>
+<p>You can also use a file object as part of a for loop. This program reads
+words.txt and prints each word, one per line:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">fin</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;words.txt&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fin</span><span class="p">:</span>
+    <span class="n">word</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="exercises">
+<h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
+<p>There are solutions to these exercises in the next section. You should
+at least attempt each one before you read the solutions.</p>
+<p>Write a program that reads words.txt and prints only the words with more
+than 20 characters (not counting whitespace).</p>
+<p>In 1939 Ernest Vincent Wright published a 50,000 word novel called
+<em>Gadsby</em> that does not contain the letter “e”. Since “e” is the most
+common letter in English, that’s not easy to do.</p>
+<p>In fact, it is difficult to construct a solitary thought without using
+that most common symbol. It is slow going at first, but with caution and
+hours of training you can gradually gain facility.</p>
+<p>All right, I’ll stop now.</p>
+<p>Write a function called <code class="docutils literal"><span class="pre">has_no_e</span></code> that returns True if the given word
+doesn’t have the letter “e” in it.</p>
+<p>Modify your program from the previous section to print only the words
+that have no “e” and compute the percentage of the words in the list
+that have no “e”.</p>
+<p>Write a function named avoids that takes a word and a string of
+forbidden letters, and that returns True if the word doesn’t use any of
+the forbidden letters.</p>
+<p>Modify your program to prompt the user to enter a string of forbidden
+letters and then print the number of words that don’t contain any of
+them. Can you find a combination of 5 forbidden letters that excludes
+the smallest number of words?</p>
+<p>Write a function named <code class="docutils literal"><span class="pre">uses_only</span></code> that takes a word and a string of
+letters, and that returns True if the word contains only letters in the
+list. Can you make a sentence using only the letters acefhlo? Other than
+“Hoe alfalfa?”</p>
+<p>Write a function named <code class="docutils literal"><span class="pre">uses_all</span></code> that takes a word and a string of
+required letters, and that returns True if the word uses all the
+required letters at least once. How many words are there that use all
+the vowels aeiou? How about aeiouy?</p>
+<p>Write a function called <code class="docutils literal"><span class="pre">is_abecedarian</span></code> that returns True if the
+letters in a word appear in alphabetical order (double letters are ok).
+How many abecedarian words are there?</p>
+</div>
+<div class="section" id="search">
+<h2>Search<a class="headerlink" href="#search" title="Permalink to this headline">¶</a></h2>
+<p>All of the exercises in the previous section have something in common;
+they can be solved with the search pattern we saw in Section&nbsp;[find]. The
+simplest example is:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">has_no_e</span><span class="p">(</span><span class="n">word</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">letter</span> <span class="ow">in</span> <span class="n">word</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">letter</span> <span class="o">==</span> <span class="s">&#39;e&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="bp">True</span>
+</pre></div>
+</div>
+<p>The for loop traverses the characters in word. If we find the letter
+“e”, we can immediately return False; otherwise we have to go to the
+next letter. If we exit the loop normally, that means we didn’t find an
+“e”, so we return True.</p>
+<p>You could write this function more concisely using the in operator, but
+I started with this version because it demonstrates the logic of the
+search pattern.</p>
+<p>is a more general version of <code class="docutils literal"><span class="pre">has_no_e</span></code> but it has the same structure:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">avoids</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">forbidden</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">letter</span> <span class="ow">in</span> <span class="n">word</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">letter</span> <span class="ow">in</span> <span class="n">forbidden</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="bp">True</span>
+</pre></div>
+</div>
+<p>We can return False as soon as we find a forbidden letter; if we get to
+the end of the loop, we return True.</p>
+<p><code class="docutils literal"><span class="pre">uses_only</span></code> is similar except that the sense of the condition is
+reversed:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">uses_only</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">available</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">letter</span> <span class="ow">in</span> <span class="n">word</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">letter</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">available</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="bp">True</span>
+</pre></div>
+</div>
+<p>Instead of a list of forbidden letters, we have a list of available
+letters. If we find a letter in word that is not in available, we can
+return False.</p>
+<p><code class="docutils literal"><span class="pre">uses_all</span></code> is similar except that we reverse the role of the word and
+the string of letters:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">uses_all</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">required</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">letter</span> <span class="ow">in</span> <span class="n">required</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">letter</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">word</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="bp">True</span>
+</pre></div>
+</div>
+<p>Instead of traversing the letters in word, the loop traverses the
+required letters. If any of the required letters do not appear in the
+word, we can return False.</p>
+<p>If you were really thinking like a computer scientist, you would have
+recognized that <code class="docutils literal"><span class="pre">uses_all</span></code> was an instance of a previously solved
+problem, and you would have written:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">uses_all</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">required</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">uses_only</span><span class="p">(</span><span class="n">required</span><span class="p">,</span> <span class="n">word</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This is an example of a program development plan called <strong>reduction to a
+previously solved problem</strong>, which means that you recognize the problem
+you are working on as an instance of a solved problem and apply an
+existing solution.</p>
+</div>
+<div class="section" id="looping-with-indices">
+<h2>Looping with indices<a class="headerlink" href="#looping-with-indices" title="Permalink to this headline">¶</a></h2>
+<p>I wrote the functions in the previous section with for loops because I
+only needed the characters in the strings; I didn’t have to do anything
+with the indices.</p>
+<p>For <code class="docutils literal"><span class="pre">is_abecedarian</span></code> we have to compare adjacent letters, which is a
+little tricky with a for loop:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">is_abecedarian</span><span class="p">(</span><span class="n">word</span><span class="p">):</span>
+    <span class="n">previous</span> <span class="o">=</span> <span class="n">word</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">word</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">c</span> <span class="o">&lt;</span> <span class="n">previous</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="n">previous</span> <span class="o">=</span> <span class="n">c</span>
+    <span class="k">return</span> <span class="bp">True</span>
+</pre></div>
+</div>
+<p>An alternative is to use recursion:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">is_abecedarian</span><span class="p">(</span><span class="n">word</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">word</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">True</span>
+    <span class="k">if</span> <span class="n">word</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">word</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="n">is_abecedarian</span><span class="p">(</span><span class="n">word</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+</pre></div>
+</div>
+<p>Another option is to use a while loop:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">is_abecedarian</span><span class="p">(</span><span class="n">word</span><span class="p">):</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">word</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">word</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">word</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span>
+    <span class="k">return</span> <span class="bp">True</span>
+</pre></div>
+</div>
+<p>The loop starts at i=0 and ends when i=len(word)-1. Each time through
+the loop, it compares the <span class="math">i</span>th character (which you can think
+of as the current character) to the <span class="math">i+1</span>th character (which you
+can think of as the next).</p>
+<p>If the next character is less than (alphabetically before) the current
+one, then we have discovered a break in the abecedarian trend, and we
+return False.</p>
+<p>If we get to the end of the loop without finding a fault, then the word
+passes the test. To convince yourself that the loop ends correctly,
+consider an example like <code class="docutils literal"><span class="pre">'flossy'</span></code>. The length of the word is 6, so
+the last time the loop runs is when i is 4, which is the index of the
+second-to-last character. On the last iteration, it compares the
+second-to-last character to the last, which is what we want.</p>
+<p>Here is a version of <code class="docutils literal"><span class="pre">is_palindrome</span></code> (see Exercise&nbsp;[palindrome]) that
+uses two indices; one starts at the beginning and goes up; the other
+starts at the end and goes down.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">is_palindrome</span><span class="p">(</span><span class="n">word</span><span class="p">):</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">j</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">word</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
+
+    <span class="k">while</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">j</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">word</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">word</span><span class="p">[</span><span class="n">j</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="n">j</span><span class="o">-</span><span class="mi">1</span>
+
+    <span class="k">return</span> <span class="bp">True</span>
+</pre></div>
+</div>
+<p>Or we could reduce to a previously solved problem and write:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">is_palindrome</span><span class="p">(</span><span class="n">word</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">is_reverse</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">word</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Using <code class="docutils literal"><span class="pre">is_reverse</span></code> from Section&nbsp;[isreverse].</p>
+</div>
+<div class="section" id="debugging">
+<h2>Debugging<a class="headerlink" href="#debugging" title="Permalink to this headline">¶</a></h2>
+<p>Testing programs is hard. The functions in this chapter are relatively
+easy to test because you can check the results by hand. Even so, it is
+somewhere between difficult and impossible to choose a set of words that
+test for all possible errors.</p>
+<p>Taking <code class="docutils literal"><span class="pre">has_no_e</span></code> as an example, there are two obvious cases to check:
+words that have an ‘e’ should return False, and words that don’t should
+return True. You should have no trouble coming up with one of each.</p>
+<p>Within each case, there are some less obvious subcases. Among the words
+that have an “e”, you should test words with an “e” at the beginning,
+the end, and somewhere in the middle. You should test long words, short
+words, and very short words, like the empty string. The empty string is
+an example of a <strong>special case</strong>, which is one of the non-obvious cases
+where errors often lurk.</p>
+<p>In addition to the test cases you generate, you can also test your
+program with a word list like words.txt. By scanning the output, you
+might be able to catch errors, but be careful: you might catch one kind
+of error (words that should not be included, but are) and not another
+(words that should be included, but aren’t).</p>
+<p>In general, testing can help you find bugs, but it is not easy to
+generate a good set of test cases, and even if you do, you can’t be sure
+your program is correct. According to a legendary computer scientist:</p>
+<blockquote>
+<div><p>Program testing can be used to show the presence of bugs, but never
+to show their absence!</p>
+<p class="attribution">&mdash;Edsger W. Dijkstra</p>
+</div></blockquote>
+</div>
+<div class="section" id="glossary">
+<span id="glossary09"></span><h2>Glossary<a class="headerlink" href="#glossary" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>objeto-arquivo (<em>file object</em>)</dt>
+<dd>A value that represents an open file.</dd>
+<dt>redução a um problema resolvido (<em>reduction to a previously solved problem</em>)</dt>
+<dd>A way of solving a problem by expressing it as an instance of a previously solved problem.</dd>
+<dt>caso especial (<em>special case</em>)</dt>
+<dd>A test case that is atypical or non-obvious (and less likely to be handled correctly).</dd>
+</dl>
+</div>
+<div class="section" id="id1">
+<h2>Exercises<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>This question is based on a Puzzler that was broadcast on the radio
+program <em>Car Talk</em> (<a class="reference external" href="http://www.cartalk.com/content/puzzlers">http://www.cartalk.com/content/puzzlers</a>):</p>
+<blockquote>
+<div>Give me a word with three consecutive double letters. I’ll give you
+a couple of words that almost qualify, but don’t. For example, the
+word committee, c-o-m-m-i-t-t-e-e. It would be great except for the
+‘i’ that sneaks in there. Or Mississippi: M-i-s-s-i-s-s-i-p-p-i. If
+you could take out those i’s it would work. But there is a word that
+has three consecutive pairs of letters and to the best of my
+knowledge this may be the only word. Of course there are probably
+500 more but I can only think of one. What is the word?</div></blockquote>
+<p>Write a program to find it. Solution:
+<a class="reference external" href="http://thinkpython2.com/code/cartalk1.py">http://thinkpython2.com/code/cartalk1.py</a>.</p>
+<p>Here’s another <em>Car Talk</em> Puzzler
+(<a class="reference external" href="http://www.cartalk.com/content/puzzlers">http://www.cartalk.com/content/puzzlers</a>):</p>
+<blockquote>
+<div><p>``I was driving on the highway the other day and I happened to
+notice my odometer. Like most odometers, it shows six digits, in
+whole miles only. So, if my car had 300,000 miles, for example, I’d
+see 3-0-0-0-0-0.</p>
+<p>``Now, what I saw that day was very interesting. I noticed that
+the last 4 digits were palindromic; that is, they read the same
+forward as backward. For example, 5-4-4-5 is a palindrome, so my
+odometer could have read 3-1-5-4-4-5.</p>
+<p>``One mile later, the last 5 numbers were palindromic. For
+example, it could have read 3-6-5-4-5-6. One mile after that, the
+middle 4 out of 6 numbers were palindromic. And you ready for this?
+One mile later, all 6 were palindromic!</p>
+<p>“The question is, what was on the odometer when I first looked?”</p>
+</div></blockquote>
+<p>Write a Python program that tests all the six-digit numbers and prints
+any numbers that satisfy these requirements. Solution:
+<a class="reference external" href="http://thinkpython2.com/code/cartalk2.py">http://thinkpython2.com/code/cartalk2.py</a>.</p>
+<p>Here’s another <em>Car Talk</em> Puzzler you can solve with a search
+(<a class="reference external" href="http://www.cartalk.com/content/puzzlers">http://www.cartalk.com/content/puzzlers</a>):</p>
+<blockquote>
+<div><p>``Recently I had a visit with my mom and we realized that the two
+digits that make up my age when reversed resulted in her age. For
+example, if she’s 73, I’m 37. We wondered how often this has
+happened over the years but we got sidetracked with other topics and
+we never came up with an answer.</p>
+<p>“When I got home I figured out that the digits of our ages have been
+reversible six times so far. I also figured out that if we’re lucky
+it would happen again in a few years, and if we’re really lucky it
+would happen one more time after that. In other words, it would have
+happened 8 times over all. So the question is, how old am I now?”</p>
+</div></blockquote>
+<p>Write a Python program that searches for solutions to this Puzzler.
+Hint: you might find the string method zfill useful.</p>
+<p>Solution: <a class="reference external" href="http://thinkpython2.com/code/cartalk3.py">http://thinkpython2.com/code/cartalk3.py</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Case study: word play</a><ul>
+<li><a class="reference internal" href="#reading-word-lists">Reading word lists</a></li>
+<li><a class="reference internal" href="#exercises">Exercises</a></li>
+<li><a class="reference internal" href="#search">Search</a></li>
+<li><a class="reference internal" href="#looping-with-indices">Looping with indices</a></li>
+<li><a class="reference internal" href="#debugging">Debugging</a></li>
+<li><a class="reference internal" href="#glossary">Glossary</a></li>
+<li><a class="reference internal" href="#id1">Exercises</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="08-string.html" title="previous chapter">Strings</a></li>
+      <li>Next: <a href="10-list.html" title="next chapter">Lists</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/09-case-word.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Allen B. Downey.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
+      |
+      <a href="_sources/09-case-word.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

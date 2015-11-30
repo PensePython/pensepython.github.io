@@ -1,0 +1,33 @@
+método (*method*)
+  A function that is associated with an object and called using dot notation.
+
+laço (*loop*)
+  A part of a program that can run repeatedly.
+
+encapsulamento (*encapsulation*)
+  The process of transforming a sequence of statements into a function definition.
+
+generalização (*generalization*)
+  The process of replacing something unnecessarily specific (like a number) with something appropriately general (like a variable or parameter).
+
+argumento nomeado (*keyword argument*)
+  An argument that includes the name of the parameter as a “keyword”.
+
+assinatura (*interface*)
+  A description of how to use a function, including the name and descriptions of the arguments and return value.
+
+refatoração (*refactoring*)
+  The process of modifying a working program to improve function interfaces and other qualities of the code.
+
+plano de desenvolvimento (*development plan*)
+  A process for writing programs.
+
+*docstring*
+  A string that appears at the top of a function definition to document the function’s interface.
+
+pré-condição (*precondition*)
+  A requirement that should be satisfied by the caller before a function starts.
+
+pós-condição (*postcondition*)
+  A requirement that should be satisfied by the function before it ends.
+

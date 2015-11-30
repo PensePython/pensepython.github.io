@@ -1,0 +1,9 @@
+objeto-arquivo (*file object*)
+  A value that represents an open file.
+
+redução a um problema resolvido (*reduction to a previously solved problem*)
+  A way of solving a problem by expressing it as an instance of a previously solved problem.
+
+caso especial (*special case*)
+  A test case that is atypical or non-obvious (and less likely to be handled correctly).
+

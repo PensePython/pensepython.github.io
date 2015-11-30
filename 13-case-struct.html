@@ -1,0 +1,676 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Case study: data structure selection &mdash; Pense Python 2e documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2e',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Pense Python 2e documentation" href="index.html" />
+    <link rel="next" title="Files" href="14-file.html" />
+    <link rel="prev" title="Tuples" href="12-tuple.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="case-study-data-structure-selection">
+<h1>Case study: data structure selection<a class="headerlink" href="#case-study-data-structure-selection" title="Permalink to this headline">¶</a></h1>
+<p>At this point you have learned about Python’s core data structures, and
+you have seen some of the algorithms that use them. If you would like to
+know more about algorithms, this might be a good time to read
+Chapter&nbsp;[algorithms]. But you don’t have to read it before you go on;
+you can read it whenever you are interested.</p>
+<p>This chapter presents a case study with exercises that let you think
+about choosing data structures and practice using them.</p>
+<div class="section" id="word-frequency-analysis">
+<h2>Word frequency analysis<a class="headerlink" href="#word-frequency-analysis" title="Permalink to this headline">¶</a></h2>
+<p>As usual, you should at least attempt the exercises before you read my
+solutions.</p>
+<p>Write a program that reads a file, breaks each line into words, strips
+whitespace and punctuation from the words, and converts them to
+lowercase.</p>
+<p>Hint: The string module provides a string named whitespace, which
+contains space, tab, newline, etc., and punctuation which contains the
+punctuation characters. Let’s see if we can make Python swear:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">string</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">string</span><span class="o">.</span><span class="n">punctuation</span>
+<span class="go">&#39;!&quot;#$%&amp;&#39;()*+,-./:;&lt;=&gt;?@[\]^_`{|}~&#39;</span>
+</pre></div>
+</div>
+<p>Also, you might consider using the string methods strip, replace and
+translate.</p>
+<p>Go to Project Gutenberg (<a class="reference external" href="http://gutenberg.org">http://gutenberg.org</a>) and download your
+favorite out-of-copyright book in plain text format.</p>
+<p>Modify your program from the previous exercise to read the book you
+downloaded, skip over the header information at the beginning of the
+file, and process the rest of the words as before.</p>
+<p>Then modify the program to count the total number of words in the book,
+and the number of times each word is used.</p>
+<p>Print the number of different words used in the book. Compare different
+books by different authors, written in different eras. Which author uses
+the most extensive vocabulary?</p>
+<p>Modify the program from the previous exercise to print the 20 most
+frequently used words in the book.</p>
+<p>Modify the previous program to read a word list (see Section&nbsp;[wordlist])
+and then print all the words in the book that are not in the word list.
+How many of them are typos? How many of them are common words that
+<em>should</em> be in the word list, and how many of them are really obscure?</p>
+</div>
+<div class="section" id="random-numbers">
+<h2>Random numbers<a class="headerlink" href="#random-numbers" title="Permalink to this headline">¶</a></h2>
+<p>Given the same inputs, most computer programs generate the same outputs
+every time, so they are said to be <strong>deterministic</strong>. Determinism is
+usually a good thing, since we expect the same calculation to yield the
+same result. For some applications, though, we want the computer to be
+unpredictable. Games are an obvious example, but there are more.</p>
+<p>Making a program truly nondeterministic turns out to be difficult, but
+there are ways to make it at least seem nondeterministic. One of them is
+to use algorithms that generate <strong>pseudorandom</strong> numbers. Pseudorandom
+numbers are not truly random because they are generated by a
+deterministic computation, but just by looking at the numbers it is all
+but impossible to distinguish them from random.</p>
+<p>The random module provides functions that generate pseudorandom numbers
+(which I will simply call “random” from here on).</p>
+<p>The function random returns a random float between 0.0 and 1.0
+(including 0.0 but not 1.0). Each time you call random, you get the next
+number in a long series. To see a sample, run this loop:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">random</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The function randint takes parameters low and high and returns an
+integer between low and high (including both).</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="go">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="go">9</span>
+</pre></div>
+</div>
+<p>To choose an element from a sequence at random, you can use choice:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="go">3</span>
+</pre></div>
+</div>
+<p>The random module also provides functions to generate random values from
+continuous distributions including Gaussian, exponential, gamma, and a
+few more.</p>
+<p>Write a function named <code class="docutils literal"><span class="pre">choose_from_hist</span></code> that takes a histogram as
+defined in Section&nbsp;[histogram] and returns a random value from the
+histogram, chosen with probability in proportion to frequency. For
+example, for this histogram:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hist</span> <span class="o">=</span> <span class="n">histogram</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hist</span>
+<span class="go">{&#39;a&#39;: 2, &#39;b&#39;: 1}</span>
+</pre></div>
+</div>
+<p>your function should return <code class="docutils literal"><span class="pre">'a'</span></code> with probability <span class="math">2/3</span> and
+<code class="docutils literal"><span class="pre">'b'</span></code> with probability <span class="math">1/3</span>.</p>
+</div>
+<div class="section" id="word-histogram">
+<h2>Word histogram<a class="headerlink" href="#word-histogram" title="Permalink to this headline">¶</a></h2>
+<p>You should attempt the previous exercises before you go on. You can
+download my solution from <a class="reference external" href="http://thinkpython2.com/code/analyze_book1.py">http://thinkpython2.com/code/analyze_book1.py</a>.
+You will also need <a class="reference external" href="http://thinkpython2.com/code/emma.txt">http://thinkpython2.com/code/emma.txt</a>.</p>
+<p>Here is a program that reads a file and builds a histogram of the words
+in the file:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">string</span>
+
+<span class="k">def</span> <span class="nf">process_file</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="n">hist</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="n">fp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fp</span><span class="p">:</span>
+        <span class="n">process_line</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">hist</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">hist</span>
+
+<span class="k">def</span> <span class="nf">process_line</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">hist</span><span class="p">):</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;-&#39;</span><span class="p">,</span> <span class="s">&#39; &#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">():</span>
+        <span class="n">word</span> <span class="o">=</span> <span class="n">word</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">punctuation</span> <span class="o">+</span> <span class="n">string</span><span class="o">.</span><span class="n">whitespace</span><span class="p">)</span>
+        <span class="n">word</span> <span class="o">=</span> <span class="n">word</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="n">hist</span><span class="p">[</span><span class="n">word</span><span class="p">]</span> <span class="o">=</span> <span class="n">hist</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+
+<span class="n">hist</span> <span class="o">=</span> <span class="n">process_file</span><span class="p">(</span><span class="s">&#39;emma.txt&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This program reads emma.txt, which contains the text of <em>Emma</em> by Jane
+Austen.</p>
+<p><code class="docutils literal"><span class="pre">process_file</span></code> loops through the lines of the file, passing them one
+at a time to <code class="docutils literal"><span class="pre">process_line</span></code>. The histogram hist is being used as an
+accumulator.</p>
+<p><code class="docutils literal"><span class="pre">process_line</span></code> uses the string method replace to replace hyphens with
+spaces before using split to break the line into a list of strings. It
+traverses the list of words and uses strip and lower to remove
+punctuation and convert to lower case. (It is a shorthand to say that
+strings are “converted”; remember that strings are immutable, so methods
+like strip and lower return new strings.)</p>
+<p>Finally, <code class="docutils literal"><span class="pre">process_line</span></code> updates the histogram by creating a new item
+or incrementing an existing one.</p>
+<p>To count the total number of words in the file, we can add up the
+frequencies in the histogram:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">total_words</span><span class="p">(</span><span class="n">hist</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">hist</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>The number of different words is just the number of items in the
+dictionary:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">different_words</span><span class="p">(</span><span class="n">hist</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">hist</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here is some code to print the results:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">print</span><span class="p">(</span><span class="s">&#39;Total number of words:&#39;</span><span class="p">,</span> <span class="n">total_words</span><span class="p">(</span><span class="n">hist</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&#39;Number of different words:&#39;</span><span class="p">,</span> <span class="n">different_words</span><span class="p">(</span><span class="n">hist</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>And the results:</p>
+<div class="highlight-python"><div class="highlight"><pre>Total number of words: 161080
+Number of different words: 7214
+</pre></div>
+</div>
+</div>
+<div class="section" id="most-common-words">
+<h2>Most common words<a class="headerlink" href="#most-common-words" title="Permalink to this headline">¶</a></h2>
+<p>To find the most common words, we can make a list of tuples, where each
+tuple contains a word and its frequency, and sort it.</p>
+<p>The following function takes a histogram and returns a list of
+word-frequency tuples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">most_common</span><span class="p">(</span><span class="n">hist</span><span class="p">):</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">hist</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">value</span><span class="p">,</span> <span class="n">key</span><span class="p">))</span>
+
+    <span class="n">t</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">t</span>
+</pre></div>
+</div>
+<p>In each tuple, the frequency appears first, so the resulting list is
+sorted by frequency. Here is a loop that prints the ten most common
+words:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">t</span> <span class="o">=</span> <span class="n">most_common</span><span class="p">(</span><span class="n">hist</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&#39;The most common words are:&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">freq</span><span class="p">,</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">t</span><span class="p">[:</span><span class="mi">10</span><span class="p">]:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">freq</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>I use the keyword argument sep to tell print to use a tab character as a
+“separator”, rather than a space, so the second column is lined up. Here
+are the results from <em>Emma</em>:</p>
+<div class="highlight-python"><div class="highlight"><pre>The most common words are:
+to      5242
+the     5205
+and     4897
+of      4295
+i       3191
+a       3130
+it      2529
+her     2483
+was     2400
+she     2364
+</pre></div>
+</div>
+<p>This code can be simplified using the key parameter of the sort
+function. If you are curious, you can read about it at
+<a class="reference external" href="https://wiki.python.org/moin/HowTo/Sorting">https://wiki.python.org/moin/HowTo/Sorting</a>.</p>
+</div>
+<div class="section" id="optional-parameters">
+<h2>Optional parameters<a class="headerlink" href="#optional-parameters" title="Permalink to this headline">¶</a></h2>
+<p>We have seen built-in functions and methods that take optional
+arguments. It is possible to write programmer-defined functions with
+optional arguments, too. For example, here is a function that prints the
+most common words in a histogram</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">print_most_common</span><span class="p">(</span><span class="n">hist</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">most_common</span><span class="p">(</span><span class="n">hist</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&#39;The most common words are:&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">freq</span><span class="p">,</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">t</span><span class="p">[:</span><span class="n">num</span><span class="p">]:</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">freq</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The first parameter is required; the second is optional. The <strong>default
+value</strong> of num is 10.</p>
+<p>If you only provide one argument:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">print_most_common</span><span class="p">(</span><span class="n">hist</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>num gets the default value. If you provide two arguments:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">print_most_common</span><span class="p">(</span><span class="n">hist</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>num gets the value of the argument instead. In other words, the optional
+argument <strong>overrides</strong> the default value.</p>
+<p>If a function has both required and optional parameters, all the
+required parameters have to come first, followed by the optional ones.</p>
+</div>
+<div class="section" id="dictionary-subtraction">
+<h2>Dictionary subtraction<a class="headerlink" href="#dictionary-subtraction" title="Permalink to this headline">¶</a></h2>
+<p>Finding the words from the book that are not in the word list from
+words.txt is a problem you might recognize as set subtraction; that is,
+we want to find all the words from one set (the words in the book) that
+are not in the other (the words in the list).</p>
+<p>subtract takes dictionaries d1 and d2 and returns a new dictionary that
+contains all the keys from d1 that are not in d2. Since we don’t really
+care about the values, we set them all to None.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">subtract</span><span class="p">(</span><span class="n">d1</span><span class="p">,</span> <span class="n">d2</span><span class="p">):</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">d1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">d2</span><span class="p">:</span>
+            <span class="n">res</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">return</span> <span class="n">res</span>
+</pre></div>
+</div>
+<p>To find the words in the book that are not in words.txt, we can use
+<code class="docutils literal"><span class="pre">process_file</span></code> to build a histogram for words.txt, and then subtract:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">words</span> <span class="o">=</span> <span class="n">process_file</span><span class="p">(</span><span class="s">&#39;words.txt&#39;</span><span class="p">)</span>
+<span class="n">diff</span> <span class="o">=</span> <span class="n">subtract</span><span class="p">(</span><span class="n">hist</span><span class="p">,</span> <span class="n">words</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;Words in the book that aren&#39;t in the word list:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">diff</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s">&#39; &#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here are some of the results from <em>Emma</em>:</p>
+<div class="highlight-python"><div class="highlight"><pre>Words in the book that aren&#39;t in the word list:
+rencontre jane&#39;s blanche woodhouses disingenuousness
+friend&#39;s venice apartment ...
+</pre></div>
+</div>
+<p>Some of these words are names and possessives. Others, like “rencontre”,
+are no longer in common use. But a few are common words that should
+really be in the list!</p>
+<p>Python provides a data structure called set that provides many common
+set operations. You can read about them in Section&nbsp;[sets], or read the
+documentation at
+<a class="reference external" href="http://docs.python.org/3/library/stdtypes.html#types-set">http://docs.python.org/3/library/stdtypes.html#types-set</a>.</p>
+<p>Write a program that uses set subtraction to find words in the book that
+are not in the word list. Solution:
+<a class="reference external" href="http://thinkpython2.com/code/analyze_book2.py">http://thinkpython2.com/code/analyze_book2.py</a>.</p>
+</div>
+<div class="section" id="random-words">
+<h2>Random words<a class="headerlink" href="#random-words" title="Permalink to this headline">¶</a></h2>
+<p>To choose a random word from the histogram, the simplest algorithm is to
+build a list with multiple copies of each word, according to the
+observed frequency, and then choose from the list:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">random_word</span><span class="p">(</span><span class="n">h</span><span class="p">):</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">word</span><span class="p">,</span> <span class="n">freq</span> <span class="ow">in</span> <span class="n">h</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">word</span><span class="p">]</span> <span class="o">*</span> <span class="n">freq</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The expression * freq creates a list with freq copies of the string
+word. The extend method is similar to append except that the argument is
+a sequence.</p>
+<p>This algorithm works, but it is not very efficient; each time you choose
+a random word, it rebuilds the list, which is as big as the original
+book. An obvious improvement is to build the list once and then make
+multiple selections, but the list is still big.</p>
+<p>An alternative is:</p>
+<ol class="arabic simple">
+<li>Use keys to get a list of the words in the book.</li>
+<li>Build a list that contains the cumulative sum of the word frequencies
+(see Exercise&nbsp;[cumulative]). The last item in this list is the total
+number of words in the book, <span class="math">n</span>.</li>
+<li>Choose a random number from 1 to <span class="math">n</span>. Use a bisection search
+(See Exercise&nbsp;[bisection]) to find the index where the random number
+would be inserted in the cumulative sum.</li>
+<li>Use the index to find the corresponding word in the word list.</li>
+</ol>
+<p>[randhist]</p>
+<p>Write a program that uses this algorithm to choose a random word from
+the book. Solution: <a class="reference external" href="http://thinkpython2.com/code/analyze_book3.py">http://thinkpython2.com/code/analyze_book3.py</a>.</p>
+</div>
+<div class="section" id="markov-analysis">
+<h2>Markov analysis<a class="headerlink" href="#markov-analysis" title="Permalink to this headline">¶</a></h2>
+<p>If you choose words from the book at random, you can get a sense of the
+vocabulary, but you probably won’t get a sentence:</p>
+<div class="highlight-python"><div class="highlight"><pre>this the small regard harriet which knightley&#39;s it most things
+</pre></div>
+</div>
+<p>A series of random words seldom makes sense because there is no
+relationship between successive words. For example, in a real sentence
+you would expect an article like “the” to be followed by an adjective or
+a noun, and probably not a verb or adverb.</p>
+<p>One way to measure these kinds of relationships is Markov analysis,
+which characterizes, for a given sequence of words, the probability of
+the words that might come next. For example, the song <em>Eric, the Half a
+Bee</em> begins:</p>
+<blockquote>
+<div><div class="line-block">
+<div class="line">Half a bee, philosophically,</div>
+<div class="line">Must, ipso facto, half not be.</div>
+<div class="line">But half the bee has got to be</div>
+<div class="line">Vis a vis, its entity. D’you see?</div>
+<div class="line">But can a bee be said to be</div>
+<div class="line">Or not to be an entire bee</div>
+<div class="line">When half the bee is not a bee</div>
+<div class="line">Due to some ancient injury?</div>
+</div>
+</div></blockquote>
+<p>In this text, the phrase “half the” is always followed by the word
+“bee”, but the phrase “the bee” might be followed by either “has” or
+“is”.</p>
+<p>The result of Markov analysis is a mapping from each prefix (like “half
+the” and “the bee”) to all possible suffixes (like “has” and “is”).</p>
+<p>Given this mapping, you can generate a random text by starting with any
+prefix and choosing at random from the possible suffixes. Next, you can
+combine the end of the prefix and the new suffix to form the next
+prefix, and repeat.</p>
+<p>For example, if you start with the prefix “Half a”, then the next word
+has to be “bee”, because the prefix only appears once in the text. The
+next prefix is “a bee”, so the next suffix might be “philosophically”,
+“be” or “due”.</p>
+<p>In this example the length of the prefix is always two, but you can do
+Markov analysis with any prefix length.</p>
+<p>Markov analysis:</p>
+<ol class="arabic">
+<li><p class="first">Write a program to read a text from a file and perform Markov
+analysis. The result should be a dictionary that maps from prefixes
+to a collection of possible suffixes. The collection might be a list,
+tuple, or dictionary; it is up to you to make an appropriate choice.
+You can test your program with prefix length two, but you should
+write the program in a way that makes it easy to try other lengths.</p>
+</li>
+<li><p class="first">Add a function to the previous program to generate random text based
+on the Markov analysis. Here is an example from <em>Emma</em> with prefix
+length 2:</p>
+<blockquote>
+<div><p>He was very clever, be it sweetness or be angry, ashamed or only
+amused, at such a stroke. She had never thought of Hannah till
+you were never meant for me?“ ”I cannot make speeches, Emma:&#8221; he
+soon cut it all himself.</p>
+</div></blockquote>
+<p>For this example, I left the punctuation attached to the words. The
+result is almost syntactically correct, but not quite. Semantically,
+it almost makes sense, but not quite.</p>
+<p>What happens if you increase the prefix length? Does the random text
+make more sense?</p>
+</li>
+<li><p class="first">Once your program is working, you might want to try a mash-up: if you
+combine text from two or more books, the random text you generate
+will blend the vocabulary and phrases from the sources in interesting
+ways.</p>
+</li>
+</ol>
+<p>Credit: This case study is based on an example from Kernighan and Pike,
+<em>The Practice of Programming</em>, Addison-Wesley, 1999.</p>
+<p>You should attempt this exercise before you go on; then you can can
+download my solution from <a class="reference external" href="http://thinkpython2.com/code/markov.py">http://thinkpython2.com/code/markov.py</a>. You
+will also need <a class="reference external" href="http://thinkpython2.com/code/emma.txt">http://thinkpython2.com/code/emma.txt</a>.</p>
+</div>
+<div class="section" id="data-structures">
+<h2>Data structures<a class="headerlink" href="#data-structures" title="Permalink to this headline">¶</a></h2>
+<p>Using Markov analysis to generate random text is fun, but there is also
+a point to this exercise: data structure selection. In your solution to
+the previous exercises, you had to choose:</p>
+<ul class="simple">
+<li>How to represent the prefixes.</li>
+<li>How to represent the collection of possible suffixes.</li>
+<li>How to represent the mapping from each prefix to the collection of
+possible suffixes.</li>
+</ul>
+<p>The last one is easy: a dictionary is the obvious choice for a mapping
+from keys to corresponding values.</p>
+<p>For the prefixes, the most obvious options are string, list of strings,
+or tuple of strings.</p>
+<p>For the suffixes, one option is a list; another is a histogram
+(dictionary).</p>
+<p>How should you choose? The first step is to think about the operations
+you will need to implement for each data structure. For the prefixes, we
+need to be able to remove words from the beginning and add to the end.
+For example, if the current prefix is “Half a”, and the next word is
+“bee”, you need to be able to form the next prefix, “a bee”.</p>
+<p>Your first choice might be a list, since it is easy to add and remove
+elements, but we also need to be able to use the prefixes as keys in a
+dictionary, so that rules out lists. With tuples, you can’t append or
+remove, but you can use the addition operator to form a new tuple:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">shift</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">word</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">prefix</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="p">(</span><span class="n">word</span><span class="p">,)</span>
+</pre></div>
+</div>
+<p>shift takes a tuple of words, prefix, and a string, word, and forms a
+new tuple that has all the words in prefix except the first, and word
+added to the end.</p>
+<p>For the collection of suffixes, the operations we need to perform
+include adding a new suffix (or increasing the frequency of an existing
+one), and choosing a random suffix.</p>
+<p>Adding a new suffix is equally easy for the list implementation or the
+histogram. Choosing a random element from a list is easy; choosing from
+a histogram is harder to do efficiently (see Exercise&nbsp;[randhist]).</p>
+<p>So far we have been talking mostly about ease of implementation, but
+there are other factors to consider in choosing data structures. One is
+run time. Sometimes there is a theoretical reason to expect one data
+structure to be faster than other; for example, I mentioned that the in
+operator is faster for dictionaries than for lists, at least when the
+number of elements is large.</p>
+<p>But often you don’t know ahead of time which implementation will be
+faster. One option is to implement both of them and see which is better.
+This approach is called <strong>benchmarking</strong>. A practical alternative is to
+choose the data structure that is easiest to implement, and then see if
+it is fast enough for the intended application. If so, there is no need
+to go on. If not, there are tools, like the profile module, that can
+identify the places in a program that take the most time.</p>
+<p>The other factor to consider is storage space. For example, using a
+histogram for the collection of suffixes might take less space because
+you only have to store each word once, no matter how many times it
+appears in the text. In some cases, saving space can also make your
+program run faster, and in the extreme, your program might not run at
+all if you run out of memory. But for many applications, space is a
+secondary consideration after run time.</p>
+<p>One final thought: in this discussion, I have implied that we should use
+one data structure for both analysis and generation. But since these are
+separate phases, it would also be possible to use one structure for
+analysis and then convert to another structure for generation. This
+would be a net win if the time saved during generation exceeded the time
+spent in conversion.</p>
+</div>
+<div class="section" id="debugging">
+<h2>Debugging<a class="headerlink" href="#debugging" title="Permalink to this headline">¶</a></h2>
+<p>When you are debugging a program, and especially if you are working on a
+hard bug, there are five things to try:</p>
+<dl class="docutils">
+<dt>Reading:</dt>
+<dd>Examine your code, read it back to yourself, and check that it says
+what you meant to say.</dd>
+<dt>Running:</dt>
+<dd>Experiment by making changes and running different versions. Often
+if you display the right thing at the right place in the program,
+the problem becomes obvious, but sometimes you have to build
+scaffolding.</dd>
+<dt>Ruminating:</dt>
+<dd>Take some time to think! What kind of error is it: syntax, runtime,
+or semantic? What information can you get from the error messages,
+or from the output of the program? What kind of error could cause
+the problem you’re seeing? What did you change last, before the
+problem appeared?</dd>
+<dt>Rubberducking:</dt>
+<dd>If you explain the problem to someone else, you sometimes find the
+answer before you finish asking the question. Often you don’t need
+the other person; you could just talk to a rubber duck. And that’s
+the origin of the well-known strategy called <strong>rubber duck
+debugging</strong>. I am not making this up; see
+<a class="reference external" href="https://en.wikipedia.org/wiki/Rubber_duck_debugging">https://en.wikipedia.org/wiki/Rubber_duck_debugging</a>.</dd>
+<dt>Retreating:</dt>
+<dd>At some point, the best thing to do is back off, undoing recent
+changes, until you get back to a program that works and that you
+understand. Then you can start rebuilding.</dd>
+</dl>
+<p>Beginning programmers sometimes get stuck on one of these activities and
+forget the others. Each activity comes with its own failure mode.</p>
+<p>For example, reading your code might help if the problem is a
+typographical error, but not if the problem is a conceptual
+misunderstanding. If you don’t understand what your program does, you
+can read it 100 times and never see the error, because the error is in
+your head.</p>
+<p>Running experiments can help, especially if you run small, simple tests.
+But if you run experiments without thinking or reading your code, you
+might fall into a pattern I call “random walk programming”, which is the
+process of making random changes until the program does the right thing.
+Needless to say, random walk programming can take a long time.</p>
+<p>You have to take time to think. Debugging is like an experimental
+science. You should have at least one hypothesis about what the problem
+is. If there are two or more possibilities, try to think of a test that
+would eliminate one of them.</p>
+<p>But even the best debugging techniques will fail if there are too many
+errors, or if the code you are trying to fix is too big and complicated.
+Sometimes the best option is to retreat, simplifying the program until
+you get to something that works and that you understand.</p>
+<p>Beginning programmers are often reluctant to retreat because they can’t
+stand to delete a line of code (even if it’s wrong). If it makes you
+feel better, copy your program into another file before you start
+stripping it down. Then you can copy the pieces back one at a time.</p>
+<p>Finding a hard bug requires reading, running, ruminating, and sometimes
+retreating. If you get stuck on one of these activities, try the others.</p>
+</div>
+<div class="section" id="glossary">
+<span id="glossary13"></span><h2>Glossary<a class="headerlink" href="#glossary" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>determinístico (<em>deterministic</em>)</dt>
+<dd>Pertaining to a program that does the same thing each time it runs, given the same inputs.</dd>
+<dt>pseudo-aleatório (<em>pseudorandom</em>)</dt>
+<dd>Pertaining to a sequence of numbers that appears to be random, but is generated by a deterministic program.</dd>
+<dt>valor default (<em>default value</em>)</dt>
+<dd>The value given to an optional parameter if no argument is provided.</dd>
+<dt>sobrepor (<em>override</em>)</dt>
+<dd>To replace a default value with an argument.</dd>
+<dt>teste de desempenho (<em>benchmarking</em>)</dt>
+<dd>The process of choosing between data structures by implementing alternatives and testing them on a sample of the possible inputs.</dd>
+<dt>depuração com patinho de borracha (<em>rubber duck debugging</em>)</dt>
+<dd>Debugging by explaining your problem to an inanimate object such as a rubber duck. Articulating the problem can help you solve it, even if the rubber duck doesn’t know Python.</dd>
+</dl>
+</div>
+<div class="section" id="exercises">
+<h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
+<p>The “rank” of a word is its position in a list of words sorted by
+frequency: the most common word has rank 1, the second most common has
+rank 2, etc.</p>
+<p>Zipf’s law describes a relationship between the ranks and frequencies of
+words in natural languages (<a class="reference external" href="http://en.wikipedia.org/wiki/Zipf's_law">http://en.wikipedia.org/wiki/Zipf&#8217;s_law</a>).
+Specifically, it predicts that the frequency, <span class="math">f</span>, of the word
+with rank <span class="math">r</span> is:</p>
+<div class="math">
+<p><span class="math">f = c r^{-s}</span></p>
+</div><p>where <span class="math">s</span> and <span class="math">c</span> are parameters that depend on the language
+and the text. If you take the logarithm of both sides of this equation,
+you get:</p>
+<div class="math">
+<p><span class="math">\log f = \log c - s \log r</span></p>
+</div><p>So if you plot log <span class="math">f</span> versus log <span class="math">r</span>, you should get a
+straight line with slope <span class="math">-s</span> and intercept log <span class="math">c</span>.</p>
+<p>Write a program that reads a text from a file, counts word frequencies,
+and prints one line for each word, in descending order of frequency,
+with log <span class="math">f</span> and log <span class="math">r</span>. Use the graphing program of your
+choice to plot the results and check whether they form a straight line.
+Can you estimate the value of <span class="math">s</span>?</p>
+<p>Solution: <a class="reference external" href="http://thinkpython2.com/code/zipf.py">http://thinkpython2.com/code/zipf.py</a>. To run my solution, you
+need the plotting module matplotlib. If you installed Anaconda, you
+already have matplotlib; otherwise you might have to install it.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Case study: data structure selection</a><ul>
+<li><a class="reference internal" href="#word-frequency-analysis">Word frequency analysis</a></li>
+<li><a class="reference internal" href="#random-numbers">Random numbers</a></li>
+<li><a class="reference internal" href="#word-histogram">Word histogram</a></li>
+<li><a class="reference internal" href="#most-common-words">Most common words</a></li>
+<li><a class="reference internal" href="#optional-parameters">Optional parameters</a></li>
+<li><a class="reference internal" href="#dictionary-subtraction">Dictionary subtraction</a></li>
+<li><a class="reference internal" href="#random-words">Random words</a></li>
+<li><a class="reference internal" href="#markov-analysis">Markov analysis</a></li>
+<li><a class="reference internal" href="#data-structures">Data structures</a></li>
+<li><a class="reference internal" href="#debugging">Debugging</a></li>
+<li><a class="reference internal" href="#glossary">Glossary</a></li>
+<li><a class="reference internal" href="#exercises">Exercises</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="12-tuple.html" title="previous chapter">Tuples</a></li>
+      <li>Next: <a href="14-file.html" title="next chapter">Files</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/13-case-struct.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Allen B. Downey.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
+      |
+      <a href="_sources/13-case-struct.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

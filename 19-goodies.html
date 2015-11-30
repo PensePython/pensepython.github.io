@@ -1,0 +1,654 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The Goodies &mdash; Pense Python 2e documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2e',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Pense Python 2e documentation" href="index.html" />
+    <link rel="next" title="Debugging" href="A-debug.html" />
+    <link rel="prev" title="Inheritance" href="18-inherit.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-goodies">
+<h1>The Goodies<a class="headerlink" href="#the-goodies" title="Permalink to this headline">¶</a></h1>
+<p>One of my goals for this book has been to teach you as little Python as
+possible. When there were two ways to do something, I picked one and
+avoided mentioning the other. Or sometimes I put the second one into an
+exercise.</p>
+<p>Now I want to go back for some of the good bits that got left behind.
+Python provides a number of features that are not really necessary—you
+can write good code without them—but with them you can sometimes write
+code that’s more concise, readable or efficient, and sometimes all
+three.</p>
+<div class="section" id="conditional-expressions">
+<h2>Conditional expressions<a class="headerlink" href="#conditional-expressions" title="Permalink to this headline">¶</a></h2>
+<p>We saw conditional statements in Section&nbsp;[conditional.execution].
+Conditional statements are often used to choose one of two values; for
+example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s">&#39;nan&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This statement checks whether x is positive. If so, it computes
+math.log. If not, math.log would raise a ValueError. To avoid stopping
+the program, we generate a “NaN”, which is a special floating-point
+value that represents “Not a Number”.</p>
+<p>We can write this statement more concisely using a <strong>conditional
+expression</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">y</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s">&#39;nan&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can almost read this line like English: “y gets log-x if x is
+greater than 0; otherwise it gets NaN”.</p>
+<p>Recursive functions can sometimes be rewritten using conditional
+expressions. For example, here is a recursive version of factorial:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">factorial</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">n</span> <span class="o">*</span> <span class="n">factorial</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We can rewrite it like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">factorial</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">n</span> <span class="o">*</span> <span class="n">factorial</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Another use of conditional expressions is handling optional arguments.
+For example, here is the init method from GoodKangaroo (see
+Exercise&nbsp;[kangaroo]):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">contents</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+    <span class="k">if</span> <span class="n">contents</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">contents</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">pouch_contents</span> <span class="o">=</span> <span class="n">contents</span>
+</pre></div>
+</div>
+<p>We can rewrite this one like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">contents</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">pouch_contents</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">contents</span> <span class="o">==</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">contents</span>
+</pre></div>
+</div>
+<p>In general, you can replace a conditional statement with a conditional
+expression if both branches contain simple expressions that are either
+returned or assigned to the same variable.</p>
+</div>
+<div class="section" id="list-comprehensions">
+<h2>List comprehensions<a class="headerlink" href="#list-comprehensions" title="Permalink to this headline">¶</a></h2>
+<p>In Section&nbsp;[filter] we saw the map and filter patterns. For example,
+this function takes a list of strings, maps the string method capitalize
+to the elements, and returns a new list of strings:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">capitalize_all</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">t</span><span class="p">:</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">capitalize</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">res</span>
+</pre></div>
+</div>
+<p>We can write this more concisely using a <strong>list comprehension</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">capitalize_all</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">t</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>The bracket operators indicate that we are constructing a new list. The
+expression inside the brackets specifies the elements of the list, and
+the for clause indicates what sequence we are traversing.</p>
+<p>The syntax of a list comprehension is a little awkward because the loop
+variable, s in this example, appears in the expression before we get to
+the definition.</p>
+<p>List comprehensions can also be used for filtering. For example, this
+function selects only the elements of t that are upper case, and returns
+a new list:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">only_upper</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">t</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">isupper</span><span class="p">():</span>
+            <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">res</span>
+</pre></div>
+</div>
+<p>We can rewrite it using a list comprehension</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">only_upper</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">t</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">isupper</span><span class="p">()]</span>
+</pre></div>
+</div>
+<p>List comprehensions are concise and easy to read, at least for simple
+expressions. And they are usually faster than the equivalent for loops,
+sometimes much faster. So if you are mad at me for not mentioning them
+earlier, I understand.</p>
+<p>But, in my defense, list comprehensions are harder to debug because you
+can’t put a print statement inside the loop. I suggest that you use them
+only if the computation is simple enough that you are likely to get it
+right the first time. And for beginners that means never.</p>
+</div>
+<div class="section" id="generator-expressions">
+<h2>Generator expressions<a class="headerlink" href="#generator-expressions" title="Permalink to this headline">¶</a></h2>
+<p><strong>Generator expressions</strong> are similar to list comprehensions, but with
+parentheses instead of square brackets:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span>
+<span class="go">&lt;generator object &lt;genexpr&gt; at 0x7f4c45a786c0&gt;</span>
+</pre></div>
+</div>
+<p>The result is a generator object that knows how to iterate through a
+sequence of values. But unlike a list comprehension, it does not compute
+the values all at once; it waits to be asked. The built-in function next
+gets the next value from the generator:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">next</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">next</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+<p>When you get to the end of the sequence, next raises a StopIteration
+exception. You can also use a for loop to iterate through the values:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">g</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+<span class="go">4</span>
+<span class="go">9</span>
+<span class="go">16</span>
+</pre></div>
+</div>
+<p>The generator object keeps track of where it is in the sequence, so the
+for loop picks up where next left off. Once the generator is exhausted,
+it continues to raise StopException:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">next</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="go">StopIteration</span>
+</pre></div>
+</div>
+<p>Generator expressions are often used with functions like sum, max, and
+min:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">sum</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+<span class="go">30</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="any-and-all">
+<h2>any and all<a class="headerlink" href="#any-and-all" title="Permalink to this headline">¶</a></h2>
+<p>Python provides a built-in function, any, that takes a sequence of
+boolean values and returns True if any of the values are True. It works
+on lists:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">any</span><span class="p">([</span><span class="bp">False</span><span class="p">,</span> <span class="bp">False</span><span class="p">,</span> <span class="bp">True</span><span class="p">])</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>But it is often used with generator expressions:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">any</span><span class="p">(</span><span class="n">letter</span> <span class="o">==</span> <span class="s">&#39;t&#39;</span> <span class="k">for</span> <span class="n">letter</span> <span class="ow">in</span> <span class="s">&#39;monty&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>That example isn’t very useful because it does the same thing as the in
+operator. But we could use any to rewrite some of the search functions
+we wrote in Section&nbsp;[search]. For example, we could write avoids like
+this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">avoids</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">forbidden</span><span class="p">):</span>
+    <span class="k">return</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">letter</span> <span class="ow">in</span> <span class="n">forbidden</span> <span class="k">for</span> <span class="n">letter</span> <span class="ow">in</span> <span class="n">word</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The function almost reads like English, “word avoids forbidden if there
+are not any forbidden letters in word.”</p>
+<p>Using any with a generator expression is efficient because it stops
+immediately if it finds a True value, so it doesn’t have to evaluate the
+whole sequence.</p>
+<p>Python provides another built-in function, all, that returns True if
+every element of the sequence is True. As an exercise, use all to
+re-write <code class="docutils literal"><span class="pre">uses_all</span></code> from Section&nbsp;[search].</p>
+</div>
+<div class="section" id="sets">
+<h2>Sets<a class="headerlink" href="#sets" title="Permalink to this headline">¶</a></h2>
+<p>In Section&nbsp;[dictsub] I use dictionaries to find the words that appear in
+a document but not in a word list. The function I wrote takes d1, which
+contains the words from the document as keys, and d2, which contains the
+list of words. It returns a dictionary that contains the keys from d1
+that are not in d2.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">subtract</span><span class="p">(</span><span class="n">d1</span><span class="p">,</span> <span class="n">d2</span><span class="p">):</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">d1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">d2</span><span class="p">:</span>
+            <span class="n">res</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">return</span> <span class="n">res</span>
+</pre></div>
+</div>
+<p>In all of these dictionaries, the values are None because we never use
+them. As a result, we waste some storage space.</p>
+<p>Python provides another built-in type, called a set, that behaves like a
+collection of dictionary keys with no values. Adding elements to a set
+is fast; so is checking membership. And sets provide methods and
+operators to compute common set operations.</p>
+<p>For example, set subtraction is available as a method called difference
+or as an operator, -. So we can rewrite subtract like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">subtract</span><span class="p">(</span><span class="n">d1</span><span class="p">,</span> <span class="n">d2</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">d1</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">d2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The result is a set instead of a dictionary, but for operations like
+iteration, the behavior is the same.</p>
+<p>Some of the exercises in this book can be done concisely and efficiently
+with sets. For example, here is a solution to <code class="docutils literal"><span class="pre">has_duplicates</span></code>, from
+Exercise&nbsp;[duplicate], that uses a dictionary:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">has_duplicates</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">t</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">d</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="n">d</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="k">return</span> <span class="bp">False</span>
+</pre></div>
+</div>
+<p>When an element appears for the first time, it is added to the
+dictionary. If the same element appears again, the function returns
+True.</p>
+<p>Using sets, we can write the same function like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">has_duplicates</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">t</span><span class="p">))</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>An element can only appear in a set once, so if an element in t appears
+more than once, the set will be smaller than t. If there are no
+duplicates, the set will be the same size as t.</p>
+<p>We can also use sets to do some of the exercises in Chapter&nbsp;[wordplay].
+For example, here’s a version of <code class="docutils literal"><span class="pre">uses_only</span></code> with a loop:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">uses_only</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">available</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">letter</span> <span class="ow">in</span> <span class="n">word</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">letter</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">available</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="bp">True</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">uses_only</span></code> checks whether all letters in word are in available. We
+can rewrite it like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">uses_only</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">available</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">word</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="nb">set</span><span class="p">(</span><span class="n">available</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal"><span class="pre">&lt;=</span></code> operator checks whether one set is a subset or another,
+including the possibility that they are equal, which is true if all the
+letters in word appear in available.</p>
+<p>As an exercise, rewrite <code class="docutils literal"><span class="pre">avoids</span></code> using sets.</p>
+</div>
+<div class="section" id="counters">
+<h2>Counters<a class="headerlink" href="#counters" title="Permalink to this headline">¶</a></h2>
+<p>A Counter is like a set, except that if an element appears more than
+once, the Counter keeps track of how many times it appears. If you are
+familiar with the mathematical idea of a <strong>multiset</strong>, a Counter is a
+natural way to represent a multiset.</p>
+<p>Counter is defined in a standard module called collections, so you have
+to import it. You can initialize a Counter with a string, list, or
+anything else that supports iteration:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">count</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s">&#39;parrot&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">count</span>
+<span class="go">Counter({&#39;r&#39;: 2, &#39;t&#39;: 1, &#39;o&#39;: 1, &#39;p&#39;: 1, &#39;a&#39;: 1})</span>
+</pre></div>
+</div>
+<p>Counters behave like dictionaries in many ways; they map from each key
+to the number of times it appears. As in dictionaries, the keys have to
+be hashable.</p>
+<p>Unlike dictionaries, Counters don’t raise an exception if you access an
+element that doesn’t appear. Instead, they return 0:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">count</span><span class="p">[</span><span class="s">&#39;d&#39;</span><span class="p">]</span>
+<span class="go">0</span>
+</pre></div>
+</div>
+<p>We can use Counters to rewrite <code class="docutils literal"><span class="pre">is_anagram</span></code> from Exercise&nbsp;[anagram]:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">is_anagram</span><span class="p">(</span><span class="n">word1</span><span class="p">,</span> <span class="n">word2</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">Counter</span><span class="p">(</span><span class="n">word1</span><span class="p">)</span> <span class="o">==</span> <span class="n">Counter</span><span class="p">(</span><span class="n">word2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If two words are anagrams, they contain the same letters with the same
+counts, so their Counters are equivalent.</p>
+<p>Counters provide methods and operators to perform set-like operations,
+including addition, subtraction, union and intersection. And they
+provide an often-useful method, <code class="docutils literal"><span class="pre">most_common</span></code>, which returns a list of
+value-frequency pairs, sorted from most common to least:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">count</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s">&#39;parrot&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">val</span><span class="p">,</span> <span class="n">freq</span> <span class="ow">in</span> <span class="n">count</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">freq</span><span class="p">)</span>
+<span class="go">r 2</span>
+<span class="go">p 1</span>
+<span class="go">a 1</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="defaultdict">
+<h2>defaultdict<a class="headerlink" href="#defaultdict" title="Permalink to this headline">¶</a></h2>
+<p>The collections module also provides defaultdict, which is like a
+dictionary except that if you access a key that doesn’t exist, it can
+generate a new value on the fly.</p>
+<p>When you create a defaultdict, you provide a function that’s used to
+create new values. A function used to create objects is sometimes called
+a <strong>factory</strong>. The built-in functions that create lists, sets, and other
+types can be used as factories:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Notice that the argument is list, which is a class object, not list(),
+which is a new list. The function you provide doesn’t get called unless
+you access a key that doesn’t exist.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s">&#39;new key&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span>
+<span class="go">[]</span>
+</pre></div>
+</div>
+<p>The new list, which we’re calling t, is also added to the dictionary. So
+if we modify t, the change appears in d:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;new value&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span>
+<span class="go">defaultdict(&lt;class &#39;list&#39;&gt;, {&#39;new key&#39;: [&#39;new value&#39;]})</span>
+</pre></div>
+</div>
+<p>If you are making a dictionary of lists, you can often write simpler
+code using defaultdict. In my solution to Exercise&nbsp;[anagrams], which you
+can get from <a class="reference external" href="http://thinkpython2.com/code/anagram_sets.py">http://thinkpython2.com/code/anagram_sets.py</a>, I make a
+dictionary that maps from a sorted string of letters to the list of
+words that can be spelled with those letters. For example, ’opst’ maps
+to the list .</p>
+<p>Here’s the original code:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">all_anagrams</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+        <span class="n">word</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">signature</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">t</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">d</span><span class="p">:</span>
+            <span class="n">d</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">word</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">d</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">d</span>
+</pre></div>
+</div>
+<p>This can be simplified using setdefault, which you might have used in
+Exercise&nbsp;[setdefault]:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">all_anagrams</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+        <span class="n">word</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">signature</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+        <span class="n">d</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">d</span>
+</pre></div>
+</div>
+<p>This solution has the drawback that it makes a new list every time,
+regardless of whether it is needed. For lists, that’s no big deal, but
+if the factory function is complicated, it might be.</p>
+<p>We can avoid this problem and simplify the code using a defaultdict:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">all_anagrams</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+        <span class="n">word</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">signature</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+        <span class="n">d</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">d</span>
+</pre></div>
+</div>
+<p>My solution to Exercise&nbsp;[poker], which you can download from
+<a class="reference external" href="http://thinkpython2.com/code/PokerHandSoln.py">http://thinkpython2.com/code/PokerHandSoln.py</a>, uses setdefault in the
+function <code class="docutils literal"><span class="pre">has_straightflush</span></code>. This solution has the drawback of
+creating a Hand object every time through the loop, whether it is needed
+or not. As an exercise, rewrite it using a defaultdict.</p>
+</div>
+<div class="section" id="named-tuples">
+<h2>Named tuples<a class="headerlink" href="#named-tuples" title="Permalink to this headline">¶</a></h2>
+<p>Many simple objects are basically collections of related values. For
+example, the Point object defined in Chapter&nbsp;[clobjects] contains two
+numbers, x and y. When you define a class like this, you usually start
+with an init method and a str method:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">Point</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;(</span><span class="si">%g</span><span class="s">, </span><span class="si">%g</span><span class="s">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This is a lot of code to convey a small amount of information. Python
+provides a more concise way to say the same thing:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+<span class="n">Point</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s">&#39;Point&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="s">&#39;y&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>The first argument is the name of the class you want to create. The
+second is a list of the attributes Point objects should have, as
+strings. The return value from namedtuple is a class object:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Point</span>
+<span class="go">&lt;class &#39;__main__.Point&#39;&gt;</span>
+</pre></div>
+</div>
+<p>Point automatically provides methods like <code class="docutils literal"><span class="pre">__init__</span></code> and <code class="docutils literal"><span class="pre">__str__</span></code>
+so you don’t have to write them.</p>
+<p>To create a Point object, you use the Point class as a function:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span>
+<span class="go">Point(x=1, y=2)</span>
+</pre></div>
+</div>
+<p>The init method assigns the arguments to attributes using the names you
+provided. The str method prints a representation of the Point object and
+its attributes.</p>
+<p>You can access the elements of the named tuple by name:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">y</span>
+<span class="go">(1, 2)</span>
+</pre></div>
+</div>
+<p>But you can also treat a named tuple as a tuple:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="go">(1, 2)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">p</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span> <span class="n">y</span>
+<span class="go">(1, 2)</span>
+</pre></div>
+</div>
+<p>Named tuples provide a quick way to define simple classes. The drawback
+is that simple classes don’t always stay simple. You might decide later
+that you want to add methods to a named tuple. In that case, you could
+define a new class that inherits from the named tuple:</p>
+<div class="highlight-python"><div class="highlight"><pre>class Pointier(Point):
+    # add more methods here
+</pre></div>
+</div>
+<p>Or you could switch to a conventional class definition.</p>
+</div>
+<div class="section" id="gathering-keyword-args">
+<h2>Gathering keyword args<a class="headerlink" href="#gathering-keyword-args" title="Permalink to this headline">¶</a></h2>
+<p>In Section&nbsp;[gather], we saw how to write a function that gathers its
+arguments into a tuple:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">printall</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can call this function with any number of positional arguments (that
+is, arguments that don’t have keywords):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">printall</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s">&#39;3&#39;</span><span class="p">)</span>
+<span class="go">(1, 2.0, &#39;3&#39;)</span>
+</pre></div>
+</div>
+<p>But the operator doesn’t gather keyword arguments:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">printall</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">third</span><span class="o">=</span><span class="s">&#39;3&#39;</span><span class="p">)</span>
+<span class="go">TypeError: printall() got an unexpected keyword argument &#39;third&#39;</span>
+</pre></div>
+</div>
+<p>To gather keyword arguments, you can use the * operator:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">printall</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can call the keyword gathering parameter anything you want, but
+kwargs is a common choice. The result is a dictionary that maps keywords
+to values:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">printall</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">third</span><span class="o">=</span><span class="s">&#39;3&#39;</span><span class="p">)</span>
+<span class="go">(1, 2.0) {&#39;third&#39;: &#39;3&#39;}</span>
+</pre></div>
+</div>
+<p>If you have a dictionary of keywords and values, you can use the scatter
+operator, * to call a function:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Point</span><span class="p">(</span><span class="o">**</span><span class="n">d</span><span class="p">)</span>
+<span class="go">Point(x=1, y=2)</span>
+</pre></div>
+</div>
+<p>Without the scatter operator, the function would treat d as a single
+positional argument, so it would assign d to x and complain because
+there’s nothing to assign to y:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Point</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;stdin&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">TypeError</span>: <span class="n">__new__() missing 1 required positional argument: &#39;y&#39;</span>
+</pre></div>
+</div>
+<p>When you are working with functions that have a large number of
+parameters, it is often useful to create and pass around dictionaries
+that specify frequently used options.</p>
+</div>
+<div class="section" id="glossary">
+<span id="glossary19"></span><h2>Glossary<a class="headerlink" href="#glossary" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>expressão condicional (<em>conditional expression</em>)</dt>
+<dd>An expression that has one of two values, depending on a condition.</dd>
+<dt>listcomp (<em>list comprehension</em>)</dt>
+<dd>An expression with a for loop in square brackets that yields a new list.</dd>
+<dt>expressão geradora (<em>generator expression</em>)</dt>
+<dd>An expression with a for loop in parentheses that yields a generator object.</dd>
+<dt><em>multiset</em> (“multi-conjunto”)</dt>
+<dd>A mathematical entity that represents a mapping between the elements of a set and the number of times they appear.</dd>
+<dt><em>factory</em> (fábrica)</dt>
+<dd>A function, usually passed as a parameter, used to create objects.</dd>
+</dl>
+</div>
+<div class="section" id="exercises">
+<h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
+<p>The following is a function computes the binomial coefficient
+recursively.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">binomial_coeff</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute the binomial coefficient &quot;n choose k&quot;.</span>
+
+<span class="sd">    n: number of trials</span>
+<span class="sd">    k: number of successes</span>
+
+<span class="sd">    returns: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="n">res</span> <span class="o">=</span> <span class="n">binomial_coeff</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="o">+</span> <span class="n">binomial_coeff</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">res</span>
+</pre></div>
+</div>
+<p>Rewrite the body of the function using nested conditional expressions.</p>
+<p>One note: this function is not very efficient because it ends up
+computing the same values over and over. You could make it more
+efficient by memoizing (see Section&nbsp;[memoize]). But you will find that
+it’s harder to memoize if you write it using conditional expressions.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">The Goodies</a><ul>
+<li><a class="reference internal" href="#conditional-expressions">Conditional expressions</a></li>
+<li><a class="reference internal" href="#list-comprehensions">List comprehensions</a></li>
+<li><a class="reference internal" href="#generator-expressions">Generator expressions</a></li>
+<li><a class="reference internal" href="#any-and-all">any and all</a></li>
+<li><a class="reference internal" href="#sets">Sets</a></li>
+<li><a class="reference internal" href="#counters">Counters</a></li>
+<li><a class="reference internal" href="#defaultdict">defaultdict</a></li>
+<li><a class="reference internal" href="#named-tuples">Named tuples</a></li>
+<li><a class="reference internal" href="#gathering-keyword-args">Gathering keyword args</a></li>
+<li><a class="reference internal" href="#glossary">Glossary</a></li>
+<li><a class="reference internal" href="#exercises">Exercises</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="18-inherit.html" title="previous chapter">Inheritance</a></li>
+      <li>Next: <a href="A-debug.html" title="next chapter">Debugging</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/19-goodies.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Allen B. Downey.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
+      |
+      <a href="_sources/19-goodies.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

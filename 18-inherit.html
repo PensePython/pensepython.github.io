@@ -1,0 +1,773 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Inheritance &mdash; Pense Python 2e documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2e',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Pense Python 2e documentation" href="index.html" />
+    <link rel="next" title="The Goodies" href="19-goodies.html" />
+    <link rel="prev" title="Classes and methods" href="17-cls-meth.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="inheritance">
+<h1>Inheritance<a class="headerlink" href="#inheritance" title="Permalink to this headline">¶</a></h1>
+<p>The language feature most often associated with object-oriented
+programming is <strong>inheritance</strong>. Inheritance is the ability to define a
+new class that is a modified version of an existing class. In this
+chapter I demonstrate inheritance using classes that represent playing
+cards, decks of cards, and poker hands.</p>
+<p>If you don’t play poker, you can read about it at
+<a class="reference external" href="http://en.wikipedia.org/wiki/Poker">http://en.wikipedia.org/wiki/Poker</a>, but you don’t have to; I’ll tell you
+what you need to know for the exercises.</p>
+<p>Code examples from this chapter are available from
+<a class="reference external" href="http://thinkpython2.com/code/Card.py">http://thinkpython2.com/code/Card.py</a>.</p>
+<div class="section" id="card-objects">
+<h2>Card objects<a class="headerlink" href="#card-objects" title="Permalink to this headline">¶</a></h2>
+<p>There are fifty-two cards in a deck, each of which belongs to one of
+four suits and one of thirteen ranks. The suits are Spades, Hearts,
+Diamonds, and Clubs (in descending order in bridge). The ranks are Ace,
+2, 3, 4, 5, 6, 7, 8, 9, 10, Jack, Queen, and King. Depending on the game
+that you are playing, an Ace may be higher than King or lower than 2.</p>
+<p>If we want to define a new object to represent a playing card, it is
+obvious what the attributes should be: rank and suit. It is not as
+obvious what type the attributes should be. One possibility is to use
+strings containing words like <code class="docutils literal"><span class="pre">'Spade'</span></code> for suits and <code class="docutils literal"><span class="pre">'Queen'</span></code> for
+ranks. One problem with this implementation is that it would not be easy
+to compare cards to see which had a higher rank or suit.</p>
+<p>An alternative is to use integers to <strong>encode</strong> the ranks and suits. In
+this context, “encode” means that we are going to define a mapping
+between numbers and suits, or between numbers and ranks. This kind of
+encoding is not meant to be a secret (that would be “encryption”).</p>
+<p>For example, this table shows the suits and the corresponding integer
+codes:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="53%" />
+<col width="14%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>Spades</td>
+<td><span class="math">\mapsto</span></td>
+<td>3</td>
+</tr>
+<tr class="row-even"><td>Hearts</td>
+<td><span class="math">\mapsto</span></td>
+<td>2</td>
+</tr>
+<tr class="row-odd"><td>Diamonds</td>
+<td><span class="math">\mapsto</span></td>
+<td>1</td>
+</tr>
+<tr class="row-even"><td>Clubs</td>
+<td><span class="math">\mapsto</span></td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>This code makes it easy to compare cards; because higher suits map to
+higher numbers, we can compare suits by comparing their codes.</p>
+<p>The mapping for ranks is fairly obvious; each of the numerical ranks
+maps to the corresponding integer, and for face cards:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="26%" />
+<col width="56%" />
+<col width="18%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>Jack</td>
+<td><span class="math">\mapsto</span></td>
+<td>11</td>
+</tr>
+<tr class="row-even"><td>Queen</td>
+<td><span class="math">\mapsto</span></td>
+<td>12</td>
+</tr>
+<tr class="row-odd"><td>King</td>
+<td><span class="math">\mapsto</span></td>
+<td>13</td>
+</tr>
+</tbody>
+</table>
+<p>I am using the <span class="math">\mapsto</span>&nbsp;symbol to make it clear that these
+mappings are not part of the Python program. They are part of the
+program design, but they don’t appear explicitly in the code.</p>
+<p>The class definition for Card looks like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">Card</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Represents a standard playing card.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">suit</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">suit</span> <span class="o">=</span> <span class="n">suit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rank</span> <span class="o">=</span> <span class="n">rank</span>
+</pre></div>
+</div>
+<p>As usual, the init method takes an optional parameter for each
+attribute. The default card is the 2 of Clubs.</p>
+<p>To create a Card, you call Card with the suit and rank of the card you
+want.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">queen_of_diamonds</span> <span class="o">=</span> <span class="n">Card</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="class-attributes">
+<h2>Class attributes<a class="headerlink" href="#class-attributes" title="Permalink to this headline">¶</a></h2>
+<p>In order to print Card objects in a way that people can easily read, we
+need a mapping from the integer codes to the corresponding ranks and
+suits. A natural way to do that is with lists of strings. We assign
+these lists to <strong>class attributes</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre># inside class Card:
+
+    suit_names = [&#39;Clubs&#39;, &#39;Diamonds&#39;, &#39;Hearts&#39;, &#39;Spades&#39;]
+    rank_names = [None, &#39;Ace&#39;, &#39;2&#39;, &#39;3&#39;, &#39;4&#39;, &#39;5&#39;, &#39;6&#39;, &#39;7&#39;,
+              &#39;8&#39;, &#39;9&#39;, &#39;10&#39;, &#39;Jack&#39;, &#39;Queen&#39;, &#39;King&#39;]
+
+    def __str__(self):
+        return &#39;%s of %s&#39; % (Card.rank_names[self.rank],
+                             Card.suit_names[self.suit])
+</pre></div>
+</div>
+<p>Variables like <code class="docutils literal"><span class="pre">suit_names</span></code> and <code class="docutils literal"><span class="pre">rank_names</span></code>, which are defined
+inside a class but outside of any method, are called class attributes
+because they are associated with the class object Card.</p>
+<p>This term distinguishes them from variables like suit and rank, which
+are called <strong>instance attributes</strong> because they are associated with a
+particular instance.</p>
+<p>Both kinds of attribute are accessed using dot notation. For example, in
+<code class="docutils literal"><span class="pre">__str__</span></code>, self is a Card object, and self.rank is its rank.
+Similarly, Card is a class object, and <code class="docutils literal"><span class="pre">Card.rank_names</span></code> is a list of
+strings associated with the class.</p>
+<p>Every card has its own suit and rank, but there is only one copy of
+<code class="docutils literal"><span class="pre">suit_names</span></code> and <code class="docutils literal"><span class="pre">rank_names</span></code>.</p>
+<p>Putting it all together, the expression <code class="docutils literal"><span class="pre">Card.rank_names[self.rank]</span></code>
+means “use the attribute rank from the object self as an index into the
+list <code class="docutils literal"><span class="pre">rank_names</span></code> from the class Card, and select the appropriate
+string.”</p>
+<p>The first element of <code class="docutils literal"><span class="pre">rank_names</span></code> is None because there is no card
+with rank zero. By including None as a place-keeper, we get a mapping
+with the nice property that the index 2 maps to the string <code class="docutils literal"><span class="pre">'2'</span></code>, and
+so on. To avoid this tweak, we could have used a dictionary instead of a
+list.</p>
+<p>With the methods we have so far, we can create and print cards:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">card1</span> <span class="o">=</span> <span class="n">Card</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">11</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">card1</span><span class="p">)</span>
+<span class="go">Jack of Hearts</span>
+</pre></div>
+</div>
+<div class="figure" id="id2">
+<img alt="Object diagram." src="_images/card1.pdf" />
+<p class="caption"><span class="caption-text">Object diagram.</span></p>
+</div>
+<p>Figure&nbsp;[fig.card1] is a diagram of the Card class object and one Card
+instance. Card is a class object; its type is type. card1 is an instance
+of Card, so its type is Card. To save space, I didn’t draw the contents
+of <code class="docutils literal"><span class="pre">suit_names</span></code> and <code class="docutils literal"><span class="pre">rank_names</span></code>.</p>
+</div>
+<div class="section" id="comparing-cards">
+<h2>Comparing cards<a class="headerlink" href="#comparing-cards" title="Permalink to this headline">¶</a></h2>
+<p>For built-in types, there are relational operators (&lt;, &gt;, ==, etc.) that
+compare values and determine when one is greater than, less than, or
+equal to another. For programmer-defined types, we can override the
+behavior of the built-in operators by providing a method named
+<code class="docutils literal"><span class="pre">__lt__</span></code>, which stands for “less than”.</p>
+<p><code class="docutils literal"><span class="pre">__lt__</span></code> takes two parameters, self and other, and True if self is
+strictly less than other.</p>
+<p>The correct ordering for cards is not obvious. For example, which is
+better, the 3 of Clubs or the 2 of Diamonds? One has a higher rank, but
+the other has a higher suit. In order to compare cards, you have to
+decide whether rank or suit is more important.</p>
+<p>The answer might depend on what game you are playing, but to keep things
+simple, we’ll make the arbitrary choice that suit is more important, so
+all of the Spades outrank all of the Diamonds, and so on.</p>
+<p>With that decided, we can write <code class="docutils literal"><span class="pre">__lt__</span></code>:</p>
+<div class="highlight-python"><div class="highlight"><pre># inside class Card:
+
+    def __lt__(self, other):
+        # check the suits
+        if self.suit &lt; other.suit: return True
+        if self.suit &gt; other.suit: return False
+
+        # suits are the same... check ranks
+        return self.rank &lt; other.rank
+</pre></div>
+</div>
+<p>You can write this more concisely using tuple comparison:</p>
+<div class="highlight-python"><div class="highlight"><pre># inside class Card:
+
+    def __lt__(self, other):
+        t1 = self.suit, self.rank
+        t2 = other.suit, other.rank
+        return t1 &lt; t2
+</pre></div>
+</div>
+<p>As an exercise, write an <code class="docutils literal"><span class="pre">__lt__</span></code> method for Time objects. You can use
+tuple comparison, but you also might consider comparing integers.</p>
+</div>
+<div class="section" id="decks">
+<h2>Decks<a class="headerlink" href="#decks" title="Permalink to this headline">¶</a></h2>
+<p>Now that we have Cards, the next step is to define Decks. Since a deck
+is made up of cards, it is natural for each Deck to contain a list of
+cards as an attribute.</p>
+<p>The following is a class definition for Deck. The init method creates
+the attribute cards and generates the standard set of fifty-two cards:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">Deck</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cards</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">suit</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">rank</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">14</span><span class="p">):</span>
+                <span class="n">card</span> <span class="o">=</span> <span class="n">Card</span><span class="p">(</span><span class="n">suit</span><span class="p">,</span> <span class="n">rank</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cards</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">card</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The easiest way to populate the deck is with a nested loop. The outer
+loop enumerates the suits from 0 to 3. The inner loop enumerates the
+ranks from 1 to 13. Each iteration creates a new Card with the current
+suit and rank, and appends it to self.cards.</p>
+</div>
+<div class="section" id="printing-the-deck">
+<h2>Printing the deck<a class="headerlink" href="#printing-the-deck" title="Permalink to this headline">¶</a></h2>
+<p>Here is a <code class="docutils literal"><span class="pre">__str__</span></code> method for Deck:</p>
+<div class="highlight-python"><div class="highlight"><pre>#inside class Deck:
+
+    def __str__(self):
+        res = []
+        for card in self.cards:
+            res.append(str(card))
+        return &#39;\n&#39;.join(res)
+</pre></div>
+</div>
+<p>This method demonstrates an efficient way to accumulate a large string:
+building a list of strings and then using the string method join. The
+built-in function str invokes the <code class="docutils literal"><span class="pre">__str__</span></code> method on each card and
+returns the string representation.</p>
+<p>Since we invoke join on a newline character, the cards are separated by
+newlines. Here’s what the result looks like:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">deck</span> <span class="o">=</span> <span class="n">Deck</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">deck</span><span class="p">)</span>
+<span class="go">Ace of Clubs</span>
+<span class="go">2 of Clubs</span>
+<span class="go">3 of Clubs</span>
+<span class="gp">...</span>
+<span class="go">10 of Spades</span>
+<span class="go">Jack of Spades</span>
+<span class="go">Queen of Spades</span>
+<span class="go">King of Spades</span>
+</pre></div>
+</div>
+<p>Even though the result appears on 52 lines, it is one long string that
+contains newlines.</p>
+</div>
+<div class="section" id="add-remove-shuffle-and-sort">
+<h2>Add, remove, shuffle and sort<a class="headerlink" href="#add-remove-shuffle-and-sort" title="Permalink to this headline">¶</a></h2>
+<p>To deal cards, we would like a method that removes a card from the deck
+and returns it. The list method pop provides a convenient way to do
+that:</p>
+<div class="highlight-python"><div class="highlight"><pre>#inside class Deck:
+
+    def pop_card(self):
+        return self.cards.pop()
+</pre></div>
+</div>
+<p>Since pop removes the <em>last</em> card in the list, we are dealing from the
+bottom of the deck.</p>
+<p>To add a card, we can use the list method append:</p>
+<div class="highlight-python"><div class="highlight"><pre>#inside class Deck:
+
+    def add_card(self, card):
+        self.cards.append(card)
+</pre></div>
+</div>
+<p>A method like this that uses another method without doing much work is
+sometimes called a <strong>veneer</strong>. The metaphor comes from woodworking,
+where a veneer is a thin layer of good quality wood glued to the surface
+of a cheaper piece of wood to improve the appearance.</p>
+<p>In this case <code class="docutils literal"><span class="pre">add_card</span></code> is a “thin” method that expresses a list
+operation in terms appropriate for decks. It improves the appearance, or
+interface, of the implementation.</p>
+<p>As another example, we can write a Deck method named shuffle using the
+function shuffle from the random module:</p>
+<div class="highlight-python"><div class="highlight"><pre># inside class Deck:
+
+    def shuffle(self):
+        random.shuffle(self.cards)
+</pre></div>
+</div>
+<p>Don’t forget to import random.</p>
+<p>As an exercise, write a Deck method named sort that uses the list method
+sort to sort the cards in a Deck. sort uses the <code class="docutils literal"><span class="pre">__lt__</span></code> method we
+defined to determine the order.</p>
+</div>
+<div class="section" id="id1">
+<h2>Inheritance<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>Inheritance is the ability to define a new class that is a modified
+version of an existing class. As an example, let’s say we want a class
+to represent a “hand”, that is, the cards held by one player. A hand is
+similar to a deck: both are made up of a collection of cards, and both
+require operations like adding and removing cards.</p>
+<p>A hand is also different from a deck; there are operations we want for
+hands that don’t make sense for a deck. For example, in poker we might
+compare two hands to see which one wins. In bridge, we might compute a
+score for a hand in order to make a bid.</p>
+<p>This relationship between classes—similar, but different—lends itself to
+inheritance. To define a new class that inherits from an existing class,
+you put the name of the existing class in parentheses:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">Hand</span><span class="p">(</span><span class="n">Deck</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Represents a hand of playing cards.&quot;&quot;&quot;</span>
+</pre></div>
+</div>
+<p>This definition indicates that Hand inherits from Deck; that means we
+can use methods like <code class="docutils literal"><span class="pre">pop_card</span></code> and <code class="docutils literal"><span class="pre">add_card</span></code> for Hands as well as
+Decks.</p>
+<p>When a new class inherits from an existing one, the existing one is
+called the <strong>parent</strong> and the new class is called the <strong>child</strong>.</p>
+<p>In this example, Hand inherits <code class="docutils literal"><span class="pre">__init__</span></code> from Deck, but it doesn’t
+really do what we want: instead of populating the hand with 52 new
+cards, the init method for Hands should initialize cards with an empty
+list.</p>
+<p>If we provide an init method in the Hand class, it overrides the one in
+the Deck class:</p>
+<div class="highlight-python"><div class="highlight"><pre># inside class Hand:
+
+    def __init__(self, label=&#39;&#39;):
+        self.cards = []
+        self.label = label
+</pre></div>
+</div>
+<p>When you create a Hand, Python invokes this init method, not the one in
+Deck.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">hand</span> <span class="o">=</span> <span class="n">Hand</span><span class="p">(</span><span class="s">&#39;new hand&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hand</span><span class="o">.</span><span class="n">cards</span>
+<span class="go">[]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hand</span><span class="o">.</span><span class="n">label</span>
+<span class="go">&#39;new hand&#39;</span>
+</pre></div>
+</div>
+<p>The other methods are inherited from Deck, so we can use <code class="docutils literal"><span class="pre">pop_card</span></code>
+and <code class="docutils literal"><span class="pre">add_card</span></code> to deal a card:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">deck</span> <span class="o">=</span> <span class="n">Deck</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">card</span> <span class="o">=</span> <span class="n">deck</span><span class="o">.</span><span class="n">pop_card</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hand</span><span class="o">.</span><span class="n">add_card</span><span class="p">(</span><span class="n">card</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">hand</span><span class="p">)</span>
+<span class="go">King of Spades</span>
+</pre></div>
+</div>
+<p>A natural next step is to encapsulate this code in a method called
+<code class="docutils literal"><span class="pre">move_cards</span></code>:</p>
+<div class="highlight-python"><div class="highlight"><pre>#inside class Deck:
+
+    def move_cards(self, hand, num):
+        for i in range(num):
+            hand.add_card(self.pop_card())
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">move_cards</span></code> takes two arguments, a Hand object and the number of
+cards to deal. It modifies both self and hand, and returns None.</p>
+<p>In some games, cards are moved from one hand to another, or from a hand
+back to the deck. You can use <code class="docutils literal"><span class="pre">move_cards</span></code> for any of these
+operations: self can be either a Deck or a Hand, and hand, despite the
+name, can also be a Deck.</p>
+<p>Inheritance is a useful feature. Some programs that would be repetitive
+without inheritance can be written more elegantly with it. Inheritance
+can facilitate code reuse, since you can customize the behavior of
+parent classes without having to modify them. In some cases, the
+inheritance structure reflects the natural structure of the problem,
+which makes the design easier to understand.</p>
+<p>On the other hand, inheritance can make programs difficult to read. When
+a method is invoked, it is sometimes not clear where to find its
+definition. The relevant code may be spread across several modules.
+Also, many of the things that can be done using inheritance can be done
+as well or better without it.</p>
+</div>
+<div class="section" id="class-diagrams">
+<h2>Class diagrams<a class="headerlink" href="#class-diagrams" title="Permalink to this headline">¶</a></h2>
+<p>So far we have seen stack diagrams, which show the state of a program,
+and object diagrams, which show the attributes of an object and their
+values. These diagrams represent a snapshot in the execution of a
+program, so they change as the program runs.</p>
+<p>They are also highly detailed; for some purposes, too detailed. A class
+diagram is a more abstract representation of the structure of a program.
+Instead of showing individual objects, it shows classes and the
+relationships between them.</p>
+<p>There are several kinds of relationship between classes:</p>
+<ul class="simple">
+<li>Objects in one class might contain references to objects in another
+class. For example, each Rectangle contains a reference to a Point,
+and each Deck contains references to many Cards. This kind of
+relationship is called <strong>HAS-A</strong>, as in, “a Rectangle has a Point.”</li>
+<li>One class might inherit from another. This relationship is called
+<strong>IS-A</strong>, as in, “a Hand is a kind of a Deck.”</li>
+<li>One class might depend on another in the sense that objects in one
+class take objects in the second class as parameters, or use objects
+in the second class as part of a computation. This kind of
+relationship is called a <strong>dependency</strong>.</li>
+</ul>
+<p>A <strong>class diagram</strong> is a graphical representation of these
+relationships. For example, Figure&nbsp;[fig.class1] shows the relationships
+between Card, Deck and Hand.</p>
+<div class="figure" id="id3">
+<img alt="Class diagram." src="_images/class1.pdf" />
+<p class="caption"><span class="caption-text">Class diagram.</span></p>
+</div>
+<p>The arrow with a hollow triangle head represents an IS-A relationship;
+in this case it indicates that Hand inherits from Deck.</p>
+<p>The standard arrow head represents a HAS-A relationship; in this case a
+Deck has references to Card objects.</p>
+<p>The star () near the arrow head is a <strong>multiplicity</strong>; it indicates how
+many Cards a Deck has. A multiplicity can be a simple number, like 52, a
+range, like 5..7 or a star, which indicates that a Deck can have any
+number of Cards.</p>
+<p>There are no dependencies in this diagram. They would normally be shown
+with a dashed arrow. Or if there are a lot of dependencies, they are
+sometimes omitted.</p>
+<p>A more detailed diagram might show that a Deck actually contains a
+<em>list</em> of Cards, but built-in types like list and dict are usually not
+included in class diagrams.</p>
+</div>
+<div class="section" id="debugging">
+<h2>Debugging<a class="headerlink" href="#debugging" title="Permalink to this headline">¶</a></h2>
+<p>Inheritance can make debugging difficult because when you invoke a
+method on an object, it might be hard to figure out which method will be
+invoked.</p>
+<p>Suppose you are writing a function that works with Hand objects. You
+would like it to work with all kinds of Hands, like PokerHands,
+BridgeHands, etc. If you invoke a method like shuffle, you might get the
+one defined in Deck, but if any of the subclasses override this method,
+you’ll get that version instead. This behavior is usually a good thing,
+but it can be confusing.</p>
+<p>Any time you are unsure about the flow of execution through your
+program, the simplest solution is to add print statements at the
+beginning of the relevant methods. If Deck.shuffle prints a message that
+says something like Running Deck.shuffle, then as the program runs it
+traces the flow of execution.</p>
+<p>As an alternative, you could use this function, which takes an object
+and a method name (as a string) and returns the class that provides the
+definition of the method:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">find_defining_class</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">meth_name</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">ty</span> <span class="ow">in</span> <span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="n">mro</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">meth_name</span> <span class="ow">in</span> <span class="n">ty</span><span class="o">.</span><span class="n">__dict__</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ty</span>
+</pre></div>
+</div>
+<p>Here’s an example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">hand</span> <span class="o">=</span> <span class="n">Hand</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">find_defining_class</span><span class="p">(</span><span class="n">hand</span><span class="p">,</span> <span class="s">&#39;shuffle&#39;</span><span class="p">)</span>
+<span class="go">&lt;class &#39;Card.Deck&#39;&gt;</span>
+</pre></div>
+</div>
+<p>So the shuffle method for this Hand is the one in Deck.</p>
+<p><code class="docutils literal"><span class="pre">find_defining_class</span></code> uses the mro method to get the list of class
+objects (types) that will be searched for methods. “MRO” stands for
+“method resolution order”, which is the sequence of classes Python
+searches to “resolve” a method name.</p>
+<p>Here’s a design suggestion: when you override a method, the interface of
+the new method should be the same as the old. It should take the same
+parameters, return the same type, and obey the same preconditions and
+postconditions. If you follow this rule, you will find that any function
+designed to work with an instance of a parent class, like a Deck, will
+also work with instances of child classes like a Hand and PokerHand.</p>
+<p>If you violate this rule, which is called the “Liskov substitution
+principle”, your code will collapse like (sorry) a house of cards.</p>
+</div>
+<div class="section" id="data-encapsulation">
+<h2>Data encapsulation<a class="headerlink" href="#data-encapsulation" title="Permalink to this headline">¶</a></h2>
+<p>The previous chapters demonstrate a development plan we might call
+“object-oriented design”. We identified objects we needed—like Point,
+Rectangle and Time—and defined classes to represent them. In each case
+there is an obvious correspondence between the object and some entity in
+the real world (or at least a mathematical world).</p>
+<p>But sometimes it is less obvious what objects you need and how they
+should interact. In that case you need a different development plan. In
+the same way that we discovered function interfaces by encapsulation and
+generalization, we can discover class interfaces by <strong>data
+encapsulation</strong>.</p>
+<p>Markov analysis, from Section&nbsp;[markov], provides a good example. If you
+download my code from <a class="reference external" href="http://thinkpython2.com/code/markov.py">http://thinkpython2.com/code/markov.py</a>, you’ll see
+that it uses two global variables—<code class="docutils literal"><span class="pre">suffix_map</span></code> and <code class="docutils literal"><span class="pre">prefix</span></code>—that
+are read and written from several functions.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">suffix_map</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">prefix</span> <span class="o">=</span> <span class="p">()</span>
+</pre></div>
+</div>
+<p>Because these variables are global, we can only run one analysis at a
+time. If we read two texts, their prefixes and suffixes would be added
+to the same data structures (which makes for some interesting generated
+text).</p>
+<p>To run multiple analyses, and keep them separate, we can encapsulate the
+state of each analysis in an object. Here’s what that looks like:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">Markov</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">suffix_map</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="p">()</span>
+</pre></div>
+</div>
+<p>Next, we transform the functions into methods. For example, here’s
+<code class="docutils literal"><span class="pre">process_word</span></code>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">process_word</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">word</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">order</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">+=</span> <span class="p">(</span><span class="n">word</span><span class="p">,)</span>
+        <span class="k">return</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">suffix_map</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="c"># if there is no entry for this prefix, make one</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">suffix_map</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">word</span><span class="p">]</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="n">shift</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">,</span> <span class="n">word</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Transforming a program like this—changing the design without changing
+the behavior—is another example of refactoring (see
+Section&nbsp;[refactoring]).</p>
+<p>This example suggests a development plan for designing objects and
+methods:</p>
+<ol class="arabic simple">
+<li>Start by writing functions that read and write global variables (when
+necessary).</li>
+<li>Once you get the program working, look for associations between
+global variables and the functions that use them.</li>
+<li>Encapsulate related variables as attributes of an object.</li>
+<li>Transform the associated functions into methods of the new class.</li>
+</ol>
+<p>As an exercise, download my Markov code from
+<a class="reference external" href="http://thinkpython2.com/code/markov.py">http://thinkpython2.com/code/markov.py</a>, and follow the steps described
+above to encapsulate the global variables as attributes of a new class
+called Markov. Solution: <a class="reference external" href="http://thinkpython2.com/code/Markov.py">http://thinkpython2.com/code/Markov.py</a> (note
+the capital M).</p>
+</div>
+<div class="section" id="glossary">
+<span id="glossary18"></span><h2>Glossary<a class="headerlink" href="#glossary" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>codificar (<em>encode</em>)</dt>
+<dd>To represent one set of values using another set of values by constructing a mapping between them.</dd>
+<dt>atributo de classe (<em>class attribute</em>)</dt>
+<dd>An attribute associated with a class object. Class attributes are defined inside a class definition but outside any method.</dd>
+<dt>atributo de instância (<em>instance attribute</em>)</dt>
+<dd>An attribute associated with an instance of a class.</dd>
+<dt>fachada (<em>veneer</em>)</dt>
+<dd>A method or function that provides a different interface to another function without doing much computation.</dd>
+<dt>herança (<em>inheritance</em>)</dt>
+<dd>The ability to define a new class that is a modified version of a previously defined class.</dd>
+<dt>classe base (<em>parent class</em>)</dt>
+<dd>The class from which a child class inherits.</dd>
+<dt>classe derivada (<em>child class</em>)</dt>
+<dd>A new class created by inheriting from an existing class; also called a “subclass”.</dd>
+<dt>relação É-UM (<em>IS-A relationship</em>)</dt>
+<dd>A relationship between a child class and its parent class.</dd>
+<dt>relação TEM-UM (<em>HAS-A relationship</em>)</dt>
+<dd>A relationship between two classes where instances of one class contain references to instances of the other.</dd>
+<dt>dependência (<em>dependency</em>)</dt>
+<dd>A relationship between two classes where instances of one class use instances of the other class, but do not store them as attributes.</dd>
+<dt>diagrama de classe (<em>class diagram</em>)</dt>
+<dd>A diagram that shows the classes in a program and the relationships between them.</dd>
+<dt>cardinalidade (<em>multiplicity</em>)</dt>
+<dd>A notation in a class diagram that shows, for a HAS-A relationship, how many references there are to instances of another class.</dd>
+<dt>encapsulamento de dados (<em>data encapsulation</em>)</dt>
+<dd>A program development plan that involves a prototype using global variables and a final version that makes the global variables into instance attributes.</dd>
+</dl>
+</div>
+<div class="section" id="exercises">
+<h2>Exercises<a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
+<p>For the following program, draw a UML class diagram that shows these
+classes and the relationships among them.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">PingPongParent</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">Ping</span><span class="p">(</span><span class="n">PingPongParent</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pong</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pong</span> <span class="o">=</span> <span class="n">pong</span>
+
+
+<span class="k">class</span> <span class="nc">Pong</span><span class="p">(</span><span class="n">PingPongParent</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pings</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">pings</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pings</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pings</span> <span class="o">=</span> <span class="n">pings</span>
+
+    <span class="k">def</span> <span class="nf">add_ping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ping</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ping</span><span class="p">)</span>
+
+<span class="n">pong</span> <span class="o">=</span> <span class="n">Pong</span><span class="p">()</span>
+<span class="n">ping</span> <span class="o">=</span> <span class="n">Ping</span><span class="p">(</span><span class="n">pong</span><span class="p">)</span>
+<span class="n">pong</span><span class="o">.</span><span class="n">add_ping</span><span class="p">(</span><span class="n">ping</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Write a Deck method called <code class="docutils literal"><span class="pre">deal_hands</span></code> that takes two parameters, the
+number of hands and the number of cards per hand. It should create the
+appropriate number of Hand objects, deal the appropriate number of cards
+per hand, and return a list of Hands.</p>
+<p>[poker]</p>
+<p>The following are the possible hands in poker, in increasing order of
+value and decreasing order of probability:</p>
+<dl class="docutils">
+<dt>pair:</dt>
+<dd>two cards with the same rank</dd>
+<dt>two pair:</dt>
+<dd>two pairs of cards with the same rank</dd>
+<dt>three of a kind:</dt>
+<dd>three cards with the same rank</dd>
+<dt>straight:</dt>
+<dd>five cards with ranks in sequence (aces can be high or low, so
+Ace-2-3-4-5 is a straight and so is 10-Jack-Queen-King-Ace, but
+Queen-King-Ace-2-3 is not.)</dd>
+<dt>flush:</dt>
+<dd>five cards with the same suit</dd>
+<dt>full house:</dt>
+<dd>three cards with one rank, two cards with another</dd>
+<dt>four of a kind:</dt>
+<dd>four cards with the same rank</dd>
+<dt>straight flush:</dt>
+<dd>five cards in sequence (as defined above) and with the same suit</dd>
+</dl>
+<p>The goal of these exercises is to estimate the probability of drawing
+these various hands.</p>
+<ol class="arabic">
+<li><p class="first">Download the following files from <a class="reference external" href="http://thinkpython2.com/code">http://thinkpython2.com/code</a>:</p>
+<dl class="docutils">
+<dt>Card.py</dt>
+<dd><p class="first last">: A complete version of the Card, Deck and Hand classes in this
+chapter.</p>
+</dd>
+<dt>PokerHand.py</dt>
+<dd><p class="first last">: An incomplete implementation of a class that represents a poker
+hand, and some code that tests it.</p>
+</dd>
+</dl>
+</li>
+<li><p class="first">If you run PokerHand.py, it deals seven 7-card poker hands and checks
+to see if any of them contains a flush. Read this code carefully
+before you go on.</p>
+</li>
+<li><p class="first">Add methods to PokerHand.py named <code class="docutils literal"><span class="pre">has_pair</span></code>, <code class="docutils literal"><span class="pre">has_twopair</span></code>, etc.
+that return True or False according to whether or not the hand meets
+the relevant criteria. Your code should work correctly for “hands”
+that contain any number of cards (although 5 and 7 are the most
+common sizes).</p>
+</li>
+<li><p class="first">Write a method named classify that figures out the highest-value
+classification for a hand and sets the label attribute accordingly.
+For example, a 7-card hand might contain a flush and a pair; it
+should be labeled “flush”.</p>
+</li>
+<li><p class="first">When you are convinced that your classification methods are working,
+the next step is to estimate the probabilities of the various hands.
+Write a function in PokerHand.py that shuffles a deck of cards,
+divides it into hands, classifies the hands, and counts the number of
+times various classifications appear.</p>
+</li>
+<li><p class="first">Print a table of the classifications and their probabilities. Run
+your program with larger and larger numbers of hands until the output
+values converge to a reasonable degree of accuracy. Compare your
+results to the values at <a class="reference external" href="http://en.wikipedia.org/wiki/Hand_rankings">http://en.wikipedia.org/wiki/Hand_rankings</a>.</p>
+</li>
+</ol>
+<p>Solution: <a class="reference external" href="http://thinkpython2.com/code/PokerHandSoln.py">http://thinkpython2.com/code/PokerHandSoln.py</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Inheritance</a><ul>
+<li><a class="reference internal" href="#card-objects">Card objects</a></li>
+<li><a class="reference internal" href="#class-attributes">Class attributes</a></li>
+<li><a class="reference internal" href="#comparing-cards">Comparing cards</a></li>
+<li><a class="reference internal" href="#decks">Decks</a></li>
+<li><a class="reference internal" href="#printing-the-deck">Printing the deck</a></li>
+<li><a class="reference internal" href="#add-remove-shuffle-and-sort">Add, remove, shuffle and sort</a></li>
+<li><a class="reference internal" href="#id1">Inheritance</a></li>
+<li><a class="reference internal" href="#class-diagrams">Class diagrams</a></li>
+<li><a class="reference internal" href="#debugging">Debugging</a></li>
+<li><a class="reference internal" href="#data-encapsulation">Data encapsulation</a></li>
+<li><a class="reference internal" href="#glossary">Glossary</a></li>
+<li><a class="reference internal" href="#exercises">Exercises</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="17-cls-meth.html" title="previous chapter">Classes and methods</a></li>
+      <li>Next: <a href="19-goodies.html" title="next chapter">The Goodies</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/18-inherit.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Allen B. Downey.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
+      |
+      <a href="_sources/18-inherit.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,24 @@
+reatribuição (*reassignment*)
+  Assigning a new value to a variable that already exists.
+
+atualização (*update*)
+  An assignment where the new value of the variable depends on the old.
+
+inicialização (*initialization*)
+  An assignment that gives an initial value to a variable that will be updated.
+
+incrementar (*increment*)
+  An update that increases the value of a variable (often by one).
+
+decrementar (*decrement*)
+  An update that decreases the value of a variable.
+
+iteração (*iteration*)
+  Repeated execution of a set of statements using either a recursive function call or a loop.
+
+laço infinito (*infinite loop*)
+  A loop in which the terminating condition is never satisfied.
+
+algoritmo (*algorithm*)
+  A general process for solving a category of problems.
+
